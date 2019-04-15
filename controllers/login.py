@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api, reqparse
-from clases.usuarios.usuarios import check_password
+from clases.usuarios.usuarios import check_password, set_token
 
 class Login(Resource):
     def post(self,username):
@@ -8,6 +8,7 @@ class Login(Resource):
         passw = requestJson['password']
         logged = check_password( username,  passw)
         if logged:
-            return {"sesion":True},200
+            token = set_token(logged[1])
+            return {"sesion":True},200,{"authentications":token}
         else:
             return {"sesion":False},400
