@@ -69,9 +69,9 @@ class MaterialesParametro(Resource):
         permission = user["permission"]
         if user and permission == 'ADMIN':
             if eliminar_material(id):
-                return {"mensaje":"cliente eliminado"}
+                return {"mensaje":"material eliminado"}
             else:
-                return {"mensaje":"No se encontro al cliente"},404
+                return {"mensaje":"No se encontro el material"},404
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
                 

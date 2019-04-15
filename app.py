@@ -7,7 +7,7 @@ from controllers.direcciones import Direcciones,DireccionesParametro
 from controllers.empleados import Empleados,EmpleadosParametros
 from controllers.clientes import Clientes,ClientesParametros
 from controllers.materiales import MaterialesParametro, Materiales
-
+from controllers.lista_de_materiales import Lista_de_material, ListaDeMaterialesParametro,PrecioLista
 app = Flask(__name__)
 api = Api(app)
 parser = reqparse.RequestParser()
@@ -38,6 +38,12 @@ api.add_resource(ClientesParametros, '/clientes/<id>')
 
 api.add_resource(Materiales, '/materiales/')
 api.add_resource(MaterialesParametro, '/materiales/<id>')
+
+# Ruta de lista de materiales
+
+api.add_resource(Lista_de_material, '/lista_material/')
+api.add_resource(PrecioLista,'/lista_material/precio/<id>')
+api.add_resource(ListaDeMaterialesParametro, '/lista_material/<id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

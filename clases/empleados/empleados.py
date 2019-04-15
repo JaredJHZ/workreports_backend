@@ -14,7 +14,6 @@ class empleados:
             self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
             self.cursor = self.con.cursor()
             query = f"INSERT INTO empleados.empleados(id, ap_paterno, ap_materno, nombre, id_direccion) VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}','{self.id_direccion}' ); "
-            print(query)
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
