@@ -6,6 +6,8 @@ from controllers.usuarios import Usuario, UsuarioGet, UsuarioDelete
 from controllers.direcciones import Direcciones,DireccionesParametro
 from controllers.empleados import Empleados,EmpleadosParametros
 from controllers.clientes import Clientes,ClientesParametros
+from controllers.materiales import MaterialesParametro, Materiales
+
 app = Flask(__name__)
 api = Api(app)
 parser = reqparse.RequestParser()
@@ -31,6 +33,11 @@ api.add_resource(EmpleadosParametros, '/empleados/<id>')
 # Rutas de clientes
 api.add_resource(Clientes, '/clientes/')
 api.add_resource(ClientesParametros, '/clientes/<id>')
+
+# Rutas de materiales
+
+api.add_resource(Materiales, '/materiales/')
+api.add_resource(MaterialesParametro, '/materiales/<id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
