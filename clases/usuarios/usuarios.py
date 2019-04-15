@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, \
      check_password_hash
 from querys import usuarios as user_querys
 from configuration import key
+
 class Usuario:
 
     def __init__(self, usuario, password,privilegios, id):
@@ -25,7 +26,6 @@ class Usuario:
             self.cursor = self.con.cursor()
             self.pw_hash = generate_password_hash(self.password)
             query = user_querys.usuarios['insertar']
-            print(self.usuario)
             self.cursor.execute(query,(self.id,self.usuario,self.pw_hash,self.privilegios))
             self.con.commit()
             self.con.close()
