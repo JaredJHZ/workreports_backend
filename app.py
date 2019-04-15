@@ -4,6 +4,7 @@ from clases.usuarios.usuarios import Usuario
 from controllers.login import Login
 from controllers.usuarios import Usuario, UsuarioGet, UsuarioDelete
 from controllers.direcciones import Direcciones,DireccionesParametro
+from controllers.empleados import Empleados,EmpleadosParametros
 
 app = Flask(__name__)
 api = Api(app)
@@ -22,6 +23,10 @@ api.add_resource(Login, '/login/<username>')
 
 api.add_resource(Direcciones, '/direcciones/')
 api.add_resource(DireccionesParametro, '/direcciones/<id>')
+
+# Rutas de empleados
+api.add_resource(Empleados, '/empleados/')
+api.add_resource(EmpleadosParametros, '/empleados/<id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
