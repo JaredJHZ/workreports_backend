@@ -29,14 +29,17 @@ class Usuario(Resource):
 
 class UsuarioGet(Resource):
 	def get(self,id):
-		try:
-			if user:
-				data = get_data(id)
-				return {"id":data[0] , "usuario":data[1] },200
-			else:
+		token = request.headers.get("Authentication")
+		if token:
+			user = authentication(token)
+			try:
+				if user:
+					data = get_data(id)
+					return {"id":data[0] , "usuario":data[1] },200
+				else:
+					return {"autenticacion":"fallada"}, 400
+			except:
 				return {"autenticacion":"fallada"}, 400
-		except:
-			return {"autenticacion":"fallada"}, 400
 
 class UsuarioDelete(Resource):
 	def delete(self,id):

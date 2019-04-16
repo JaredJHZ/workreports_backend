@@ -8,8 +8,14 @@ from controllers.empleados import Empleados,EmpleadosParametros
 from controllers.clientes import Clientes,ClientesParametros
 from controllers.materiales import MaterialesParametro, Materiales
 from controllers.lista_de_materiales import Lista_de_material, ListaDeMaterialesParametro,PrecioLista
+from controllers.tareas import Tareas, TareasParametro
+from flask_restful.utils import cors
+
 app = Flask(__name__)
 api = Api(app)
+
+api.decorators = [cors.crossdomain(origin='*', headers=['accept', 'Content-Type','authentication'])]
+
 parser = reqparse.RequestParser()
 
 
@@ -39,11 +45,16 @@ api.add_resource(ClientesParametros, '/clientes/<id>')
 api.add_resource(Materiales, '/materiales/')
 api.add_resource(MaterialesParametro, '/materiales/<id>')
 
-# Ruta de lista de materiales
+# Rutas de lista de materiales
 
 api.add_resource(Lista_de_material, '/lista_material/')
 api.add_resource(PrecioLista,'/lista_material/precio/<id>')
 api.add_resource(ListaDeMaterialesParametro, '/lista_material/<id>')
+
+# Rutas de tareas
+
+api.add_resource(Tareas, '/tareas/')
+api.add_resource(TareasParametro, '/tareas/<id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -9,6 +9,8 @@ class Login(Resource):
         logged = check_password( username,  passw)
         if logged:
             token = set_token(logged[1])
-            return {"sesion":True},200,{"authentications":token}
+            return {"sesion":str(token)},200,{"authentications":token}
         else:
             return {"sesion":False},400
+    def options(self):
+        pass
