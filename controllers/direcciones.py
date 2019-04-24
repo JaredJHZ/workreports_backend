@@ -36,6 +36,8 @@ class Direcciones(Resource):
                 return {"mensaje":"error interno"},501
         else:
             return {"mensaje": "error, necesita autenticarsecc"},401
+    def options(self):
+        pass
 
 class DireccionesParametro(Resource):
     def put(self, id):
@@ -79,3 +81,5 @@ class DireccionesParametro(Resource):
         else:
             return {"mensaje": "error necesita estar autenticado"},400
                 
+    def options(self):
+        pass

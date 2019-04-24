@@ -5,7 +5,10 @@ from middlewares.middlewares import authentication
 import psycopg2
 
 class Materiales(Resource):
+    def options(self):
+        pass
     def post(self):
+        print(request.headers);
         token = request.headers.get("authentication")
         user = authentication(token)
         if user:
@@ -36,6 +39,8 @@ class Materiales(Resource):
             return {"mensaje": "error, necesita autenticarse"},401
 
 class MaterialesParametro(Resource):
+    def options(self):
+        pass
     def put(self, id):
         token = request.headers.get("authentication")
         user = authentication(token)

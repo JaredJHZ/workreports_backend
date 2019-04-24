@@ -34,7 +34,29 @@ class Usuario:
         except psycopg2.OperationalError as e:
             print('Unable to connect!\n{0}').format(e)
 
-    
+
+def get_all_usuarios():
+    try:
+        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
+        cursor = con.cursor()
+        query = "SELECT * FROM usuarios;"
+        cursor.execute(query)
+        data = cursor.fetchall()
+        usuarios = []
+        for user in data:
+            usuario = {
+                'id': user[0],
+                'usuario': user[1],
+                'privilegios': user[3]
+            }
+            usuarios.append(usuario)
+        cursor.close()
+        con.close()
+        return usuarios
+    except psycopg2.OperationalError as e:
+        print('Unable to connect!\n{0}').format(e)
+
+
 def get_data(id):
     try:
         con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
@@ -57,10 +79,13 @@ def check_password(username,password):
         data = cursor.fetchone()
         cursor.close()
         con.close()
+        if data == None:
+            return False
         if check_password_hash(data[0], password):
             return data
     except psycopg2.OperationalError as e:
        print('Unable to connect!\n{0}').format(e)
+       return False
 
 def delete_user(id):
     try:
@@ -88,3 +113,19 @@ def set_token(id):
     except psycopg2.OperationalError as e:
        print('Unable to connect!\n{0}').format(e)
        return False
+
+def modificar_usuario(id, usuario, password, privilegios):
+    try:
+        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        cursor = con.cursor()
+        passW = generate_password_hash(password)
+        print(passW)
+        query = f"UPDATE usuarios SET usuario = '{usuario}', password = '{passW}', privilegios = '{privilegios}'  WHERE id = '{id}'"
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        cursor.close()
+        return True
+    except psycopg2.OperationalError as e:
+        print(e)
+        return False

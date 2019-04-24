@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_restful import Resource, Api, reqparse
 from clases.usuarios.usuarios import Usuario
 from controllers.login import Login
-from controllers.usuarios import Usuario, UsuarioGet, UsuarioDelete
+from controllers.usuarios import Usuario, UsuarioGet, UsuarioDelete, UsuariosPut
 from controllers.direcciones import Direcciones,DireccionesParametro
 from controllers.empleados import Empleados,EmpleadosParametros
 from controllers.clientes import Clientes,ClientesParametros
@@ -22,7 +22,8 @@ parser = reqparse.RequestParser()
 # Rutas de usuario
 api.add_resource(Usuario, '/usuario/')
 api.add_resource(UsuarioGet,'/usuario/<id>')
-api.add_resource(UsuarioDelete, '/delete/user/<id>')
+api.add_resource(UsuariosPut,'/usuario/update/<id>')
+api.add_resource(UsuarioDelete, '/usuario/delete/<id>')
 
 # Rutas de login
 api.add_resource(Login, '/login/<username>')
