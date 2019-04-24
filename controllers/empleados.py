@@ -11,10 +11,11 @@ class Empleados(Resource):
         if user:
             info = request.get_json(force=True)
             id = info["id"]
+            print(info)
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["id_direccion"]
+            id_direccion = info["direcccion"]
             emplado = empleados(id,ap_paterno,ap_materno,nombre,id_direccion)
             try:
                 emplado.save()
@@ -36,6 +37,8 @@ class Empleados(Resource):
                 return {"mensaje":"error interno"},501
         else:
             return {"mensaje": "error, necesita autenticarse"},401
+    def options(self):
+        pass
 
 class EmpleadosParametros(Resource):
     def put(self, id):
@@ -46,7 +49,7 @@ class EmpleadosParametros(Resource):
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["id_direccion"]
+            id_direccion = info["direccion"]
             try:
                 modificar_empleado(id,nombre,ap_paterno,ap_materno,id_direccion)
                 return {"mensaje":"empleado modificado correctamente"}
@@ -78,4 +81,6 @@ class EmpleadosParametros(Resource):
                 return {"mensaje":"No se encontro el empleado"},404
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
+    def options(self):
+        pass
                 
