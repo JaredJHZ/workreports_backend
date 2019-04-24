@@ -14,7 +14,7 @@ class Clientes(Resource):
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["id_direccion"]
+            id_direccion = info["direcccion"]
             email = info["email"]
             cliente = clientes(id,ap_paterno,ap_materno,nombre,id_direccion,email)
             try:
@@ -26,6 +26,7 @@ class Clientes(Resource):
                 return {"mensaje": "error al guardar cliente"},501
         else:
             return {"mensaje": "error, necesita autenticarse"},401
+
     def get(self):
         token = request.headers.get("authentication")
         user = authentication(token)
@@ -37,6 +38,9 @@ class Clientes(Resource):
                 return {"mensaje":"error interno"},501
         else:
             return {"mensaje": "error, necesita autenticarse"},401
+    
+    def options(self):
+        pass
 
 class ClientesParametros(Resource):
     def put(self, id):
@@ -44,10 +48,11 @@ class ClientesParametros(Resource):
         user = authentication(token)
         if user:
             info = request.get_json(force = True)
+            print(info)
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["id_direccion"]
+            id_direccion = info["direccion"]
             email = info["email"]
             try:
                 modificar_cliente(id,nombre,ap_paterno,ap_materno,id_direccion,email)
@@ -55,7 +60,7 @@ class ClientesParametros(Resource):
             except:
                 return {"mensaje": "error al modificar cliente"},501
         else:
-            return {"mensaje": "error se necesita estar autenticado"},400
+            return {"mensaje": "error se necesita estar autenticado"},401
     
     def get(self,id):
         token = request.headers.get("authentication")
@@ -81,4 +86,7 @@ class ClientesParametros(Resource):
                 return {"mensaje":"No se encontro al cliente"},404
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
+
+    def options(self):
+        pass
                 
