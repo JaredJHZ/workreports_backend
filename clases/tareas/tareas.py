@@ -1,5 +1,6 @@
 import psycopg2
-
+import datetime
+import time
 class tareas:
 
     def __init__(self,id,nombre, tarifa_hora, estimado_horas, estado, real_horas = None, fecha_termino = None):
@@ -13,21 +14,27 @@ class tareas:
 
     def save(self):
         try:
+            fecha = 'NULL'
             self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
             self.cursor = self.con.cursor()
             if self.real_horas == None:
                 self.real_horas = "Null"
             if self.fecha_termino == None:
-                self.fecha_termino = "Null" 
-            query = f"INSERT INTO tareas.tareas(id, nombre, tarifa_hora, estimado_horas, estado, real_horas, fecha_termino) VALUES('{self.id}','{self.nombre}',{self.tarifa_hora}, {self.estimado_horas}, '{self.estado}', {self.real_horas}, {self.fecha_termino} ); "
+                self.fecha_termino = "Null"
+            if self.estado == 'completa':
+                self.fecha_termino = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+                fecha = f"TIMESTAMP '{self.fecha_termino}'"
+
+            query = f"INSERT INTO tareas.tareas(id, nombre, tarifa_hora, estimado_horas, estado, real_horas, fecha_termino) VALUES('{self.id}','{self.nombre}',{self.tarifa_hora}, {self.estimado_horas}, '{self.estado}', {self.real_horas}, {fecha} ); "
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
-            print("tarea guardada")
             return True
         except psycopg2.OperationalError as e:
-            print('Unable to connect!\n{0}').format(e)
+            print(e)
             return False
+        except psycopg2 as error:
+            print(error)
 
 def get_tarea(id):
     try:
@@ -68,6 +75,8 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
             real_horas = "Null"
         if fecha_termino == None:
             fecha_termino = "Null"   
+        if estado == 'completa':
+                self.fecha_termino = datetime.now()
         query = f"UPDATE tareas.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', estimado_horas = {estimado_horas}, estado = '{estado}', real_horas = {real_horas}, fecha_termino = '{fecha_termino}' WHERE id = '{id}';"
         print(query)
         cursor.execute(query)
@@ -102,6 +111,10 @@ def get_all():
         data = cursor.fetchall()
         tasks = []
         for tarea in data:
+            fecha = 'null'
+            if tarea[6] != None:
+                fecha = tarea[6].strftime("%B %d, %Y")
+            
             task = {
                 "id":tarea[0],
                 "nombre":tarea[1],
@@ -109,7 +122,7 @@ def get_all():
                 "estimado_horas":tarea[3],
                 "estado":tarea[4],
                 "real_horas":tarea[5],
-                "fecha_termino":tarea[6]
+                "fecha_termino":fecha
             }
             tasks.append(task)
         con.close()

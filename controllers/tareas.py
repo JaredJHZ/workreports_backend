@@ -20,8 +20,6 @@ class Tareas(Resource):
             try:
                 tarea.save()
                 return {"mensaje": "exito al guardar tarea"},201
-            except psycopg2.OperationalError as e:
-                print('Unable to connect!\n{0}').format(e)
             except:
                 return {"mensaje": "error al guardar tarea"},501
         else:
@@ -37,6 +35,9 @@ class Tareas(Resource):
                 return {"mensaje":"error interno"},501
         else:
             return {"mensaje": "error, necesita autenticarse"},401
+    
+    def options(self):
+        pass
 
 class TareasParametro(Resource):
     def put(self, id):
@@ -88,4 +89,7 @@ class TareasParametro(Resource):
                 return {"mensaje":"No se encontro la tarea"},404
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
+    
+    def options(self):
+        pass
                 

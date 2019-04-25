@@ -87,6 +87,7 @@ def get_all():
         con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
         cursor = con.cursor()
         query = f"SELECT * FROM clientes.clientes;"
+        print(query)
         cursor.execute(query)
         data = cursor.fetchall()
         clients = []
