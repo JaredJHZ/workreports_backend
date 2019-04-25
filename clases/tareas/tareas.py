@@ -51,7 +51,9 @@ def get_tarea(id):
         estimado_horas = data[3]
         estado = data[4]
         real_horas = data[5]
-        fecha_termino = None
+        fecha = data[6]
+        if fecha != None:
+            fecha = fecha.strftime("%B %d, %Y")
         tarea = {
             "id":id,
             "nombre":nombre,
@@ -59,7 +61,7 @@ def get_tarea(id):
             "estimado":estimado_horas,
             "estado":estado,
             "real_horas":real_horas,
-            "fecha_termino":fecha_termino
+            "fecha_termino":fecha
         }
         return tarea
     except psycopg2.OperationalError as e:
@@ -71,22 +73,23 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
     try:
         con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
         cursor = con.cursor()
-        if real_horas == None:
-            real_horas = "Null"
-        if fecha_termino == None:
-            fecha_termino = "Null"   
         if estado == 'completa':
-                self.fecha_termino = datetime.now()
-        query = f"UPDATE tareas.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', estimado_horas = {estimado_horas}, estado = '{estado}', real_horas = {real_horas}, fecha_termino = '{fecha_termino}' WHERE id = '{id}';"
+            fecha_termino = "TIMESTAMP '{0:%Y-%m-%d %H:%M:%S}'".format(datetime.datetime.now())
+        else:
+            fecha_termino = 'null'
+
+        if real_horas == None:
+            real_horas = 'null'
+        
+        query = f"UPDATE tareas.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', estimado_horas = {estimado_horas}, estado = '{estado}', real_horas = {real_horas}, fecha_termino = {fecha_termino} WHERE id = '{id}';"
         print(query)
         cursor.execute(query)
         con.commit()
         con.close()
         cursor.close()
         return True
-    except psycopg2.Error as e:
-        print(e.value)
-        return False
+    except psycopg2.OperationalError as e:
+        print('Unable to connect!\n{0}').format(e)
 
 def eliminar_tarea(id):
     try:
@@ -99,7 +102,7 @@ def eliminar_tarea(id):
         cursor.close()
         return True
     except:
-        print("error al eliminar tarea")
+        print("Error al eliminar tarea")
         return False
 
 def get_all():
@@ -129,5 +132,5 @@ def get_all():
         cursor.close()
         return tasks
     except:
-        print("error al obtener materiales")
+        print("Error al obtener materiales")
         return False

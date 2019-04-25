@@ -45,24 +45,19 @@ class TareasParametro(Resource):
         user = authentication(token)
         if user:
             info = request.get_json(force = True)
+            print(info)
+            id = info["id"]
             nombre = info["nombre"]
-            tarifa_hora = info["tarifa_horas"]
+            tarifa_hora = info["tarifa_hora"]
             estimado_horas = info["estimado_horas"]
             estado = info["estado"]
-            real_horas = info["real_horas"]
-            if estado == "COMPLETADO":
-                now = datetime.now()
-                try:
-                    modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = now, real_horas = real_horas)
-                    return {"mensaje":"tarea modificada correctamente"}
-                except:
-                    return {"mensaje": "error al modificar tarea"},501
-            else:
-                try:
-                    modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = None, real_horas = None)
-                    return {"mensaje":"tarea modificada correctamente"}
-                except:
-                    return {"mensaje": "error al modificar tarea"},501
+            real_horas = None
+            try:
+                print("entrando")
+                modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = None, real_horas = real_horas)
+                return {"mensaje":"tarea modificada correctamente"}
+            except:
+                return {"mensaje": "error al modificar tarea"},501
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
     
@@ -79,10 +74,12 @@ class TareasParametro(Resource):
             return {"mensaje": "error se necesita estar autenticado"},400
 
     def delete(self,id):
+        print("xd")
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
         if user and permission == 'ADMIN':
+            print(permission)
             if eliminar_tarea(id):
                 return {"mensaje":"tarea eliminada"}
             else:
