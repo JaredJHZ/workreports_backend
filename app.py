@@ -9,6 +9,7 @@ from controllers.clientes import Clientes,ClientesParametros
 from controllers.materiales import MaterialesParametro, Materiales
 from controllers.lista_de_materiales import Lista_de_material, ListaDeMaterialesParametro,PrecioLista
 from controllers.tareas import Tareas, TareasParametro
+from controllers.ordenes import Ordenes
 from flask_restful.utils import cors
 
 app = Flask(__name__)
@@ -56,6 +57,10 @@ api.add_resource(ListaDeMaterialesParametro, '/lista_material/<id>')
 
 api.add_resource(Tareas, '/tareas/')
 api.add_resource(TareasParametro, '/tareas/<id>')
+
+# Rutas de ordenes
+
+api.add_resource(Ordenes, '/ordenes/')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -32,9 +32,9 @@ class Tareas(Resource):
             if data:
                 return {"tareas":data},200
             else:
-                return {"mensaje":"error interno"},501
+                return {"mensaje":"Error interno"},501
         else:
-            return {"mensaje": "error, necesita autenticarse"},401
+            return {"mensaje": "Error, necesita autenticarse"},401
     
     def options(self):
         pass
@@ -55,11 +55,11 @@ class TareasParametro(Resource):
             try:
                 print("entrando")
                 modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = None, real_horas = real_horas)
-                return {"mensaje":"tarea modificada correctamente"}
+                return {"mensaje":"Tarea modificada correctamente"}
             except:
-                return {"mensaje": "error al modificar tarea"},501
+                return {"mensaje": "Error al modificar tarea"},501
         else:
-            return {"mensaje": "error se necesita estar autenticado"},400
+            return {"mensaje": "Error se necesita estar autenticado"},400
     
     def get(self,id):
         token = request.headers.get("authentication")
@@ -69,9 +69,9 @@ class TareasParametro(Resource):
             if data:
                 return {"tarea":data},201
             else:
-                return {"mensaje": "tarea no encontrada"},404
+                return {"mensaje": "Tarea no encontrada"},404
         else:
-            return {"mensaje": "error se necesita estar autenticado"},400
+            return {"mensaje": "Error se necesita estar autenticado"},400
 
     def delete(self,id):
         print("xd")
@@ -81,11 +81,11 @@ class TareasParametro(Resource):
         if user and permission == 'ADMIN':
             print(permission)
             if eliminar_tarea(id):
-                return {"mensaje":"tarea eliminada"}
+                return {"mensaje":"Tarea eliminada"}
             else:
                 return {"mensaje":"No se encontro la tarea"},404
         else:
-            return {"mensaje": "error se necesita estar autenticado"},400
+            return {"mensaje": "Error se necesita estar autenticado"},400
     
     def options(self):
         pass

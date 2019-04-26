@@ -25,7 +25,10 @@ class tareas:
                 self.fecha_termino = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
                 fecha = f"TIMESTAMP '{self.fecha_termino}'"
 
-            query = f"INSERT INTO tareas.tareas(id, nombre, tarifa_hora, estimado_horas, estado, real_horas, fecha_termino) VALUES('{self.id}','{self.nombre}',{self.tarifa_hora}, {self.estimado_horas}, '{self.estado}', {self.real_horas}, {fecha} ); "
+            query = f"INSERT INTO tareas.tareas(id, nombre, tarifa_hora, estimado_horas, estado, real_horas,\
+                 fecha_termino) VALUES('{self.id}','{self.nombre}',{self.tarifa_hora}, {self.estimado_horas}, \
+                     '{self.estado}', {self.real_horas}, {fecha} ); "
+                     
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
@@ -33,8 +36,6 @@ class tareas:
         except psycopg2.OperationalError as e:
             print(e)
             return False
-        except psycopg2 as error:
-            print(error)
 
 def get_tarea(id):
     try:
@@ -81,8 +82,10 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
         if real_horas == None:
             real_horas = 'null'
         
-        query = f"UPDATE tareas.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', estimado_horas = {estimado_horas}, estado = '{estado}', real_horas = {real_horas}, fecha_termino = {fecha_termino} WHERE id = '{id}';"
-        print(query)
+        query = (f"UPDATE tareas.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', \
+            estimado_horas = {estimado_horas}, estado = '{estado}', real_horas = {real_horas}, \
+                fecha_termino = {fecha_termino} WHERE id = '{id}';")
+      
         cursor.execute(query)
         con.commit()
         con.close()
