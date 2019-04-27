@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template , make_response
 from flask_restful import Resource, Api, reqparse
+import pdfkit
 from clases.usuarios.usuarios import Usuario
 from controllers.login import Login
 from controllers.usuarios import Usuario, UsuarioGet, UsuarioDelete, UsuariosPut
@@ -9,7 +10,7 @@ from controllers.clientes import Clientes,ClientesParametros
 from controllers.materiales import MaterialesParametro, Materiales
 from controllers.lista_de_materiales import Lista_de_material, ListaDeMaterialesParametro,PrecioLista
 from controllers.tareas import Tareas, TareasParametro
-from controllers.ordenes import Ordenes
+from controllers.ordenes import Ordenes, OrdenesPDF
 from flask_restful.utils import cors
 
 app = Flask(__name__)
@@ -61,6 +62,7 @@ api.add_resource(TareasParametro, '/tareas/<id>')
 # Rutas de ordenes
 
 api.add_resource(Ordenes, '/ordenes/')
+api.add_resource(OrdenesPDF,'/pdf/<id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

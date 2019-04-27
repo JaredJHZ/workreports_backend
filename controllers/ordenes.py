@@ -1,9 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template , make_response
 from flask_restful import Resource, Api, reqparse
+import pdfkit 
 from middlewares.middlewares import authentication
 from clases.ordenes.ordenes import ordenes
-from clases.ordenes.funciones_ordenes import guardar_serie_de_tareas, guardar_lista_de_materiales
+from clases.ordenes.funciones_ordenes import guardar_serie_de_tareas, guardar_lista_de_materiales, generar_pdf
 import psycopg2
+import pathlib
+import datetime
+import time
+
 class Ordenes(Resource):
     def post(self):
         token = request.headers.get("authentication")
@@ -30,5 +35,33 @@ class Ordenes(Resource):
         else:
             return {"mensaje": "Error"},401
 
+    def options(self):
+        pass
+
+class OrdenesPDF(Resource):
+
+    def get(self,id):
+        token = request.headers.get('authentication')
+        user = authentication(token)
+        if True:
+            info = generar_pdf(id)
+
+            image = pathlib.Path('/Users/jaredhernandez/WorkReports/backend/static/css/images/icons/logo.png').as_uri()
+
+            costo_total = float(info['costo_total_materiales']) + float(info['costo_total_tareas'])
+
+
+            rendered = render_template('pdf_template.html', cliente = info['empleado'], empleado = info['cliente'], 
+            orden = id, image = image, materiales = info['materiales'], costo_total_materiales = info['costo_total_materiales'], tareas = info['tareas'] ,
+            costo_total_tareas = info['costo_total_tareas'], costo_total = costo_total, fecha_de_creacion = info['fecha_de_creacion'])
+
+            pdf = pdfkit.from_string(rendered, False)
+            response = make_response(pdf)
+            response.headers['Content-Type'] = 'application/pdf'
+            fecha = '{0:%d-%m-%Y %h:%m:%s}'.format(datetime.datetime.now())
+            response.headers['Content-Disposition'] = f"inline; filename={'orden-'+id+'-fecha-'+fecha}.pdf"
+            return response
+        else:
+            return {"mensaje":"Error al autenticarse"}
     def options(self):
         pass

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html style="font-family: 'Times New Roman', Times, serif">
+  <head>
+    <title>Orden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+      .container {
+        max-width: 500px;
+        padding-top: 100px;
+      }
+    </style>
+    <style>
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          background-color: red;
+          color: white;
+          text-align: center;
+        }
+        </style>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col-md-10">
+          <h1 style="float: left;"><strong>WorkReports</strong></h1>
+      </div>
+      <div class="col-md-2">
+          <img style="float: right;" src="{{ image }}" width="136" height="86" alt="previous" title="Previous" border="0" />
+      </div>
+    </div>
+    <div class="row" style="border-top:3px solid #7745FF; margin-top: 3px;">
+      <div class="col-md-9">
+          <h3 style="float: left;">ORDEN DE TRABAJO </h3>
+      </div>
+      <div class="col-md-3">
+          <h3 style="float: right;">ID: {{orden}}</h3>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row justify-content-end">
+        <div class="col-md-4">
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-12">
+          <div class="alert role="alert" style="background-color: #7745FF; color: white;">
+              <h2 class="alert-heading">Orden de trabajo del cliente: <strong>{{cliente}}</strong></h2>
+              <h3>Empleado supervisor: {{empleado}}</h3>
+              <hr>
+              <h1 class="mb-0">Fecha de creacion: {{fecha_de_creacion}} </h1>
+            </div>
+      </div>
+    </div>
+
+    <div class="row" style="border-top:3px solid #7745FF; margin-top: 3px;">
+        <div class="col-md-12">
+          <h3>Seccion de materiales</h3>
+          <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Material</th>
+                  <th scope="col">Costo unitario</th>
+                  <th scope="col">Cantidad</th>
+                  <th scope="col">Total por material</th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for material in materiales %}
+                <tr>   
+                      <td>{{material.nombre}}</td>
+                      <td>${{material.costo_unitario}}</td>
+                      <td>{{material.cantidad}}</td>
+                      <th>${{material.costo_total_material}}</th>
+                </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+            <h3>Costo Total de los materiales usados:  <strong>${{costo_total_materiales}}</strong></h3>
+        </div>
+      </div>
+
+      <div class="row" style="border-top:3px solid #7745FF; margin-top: 3px;">
+          <div class="col-md-12">
+            <h3>Seccion de tareas</h3>
+            <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">Tareas</th>
+                    <th scope="col">Tarifa por hora</th>
+                    <th scope="col">Horas</th>
+                    <th scope="col">Fecha de termino</th>
+                    <th scope="col">Costo total por tarea</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for tarea in tareas %}
+                  <tr>   
+                        <td>{{tarea.nombre}}</td>
+                        <td>${{tarea.tarifa_por_hora}}</td>
+                        <td>{{tarea.horas}}</td>
+                        <td>{{tarea.fecha}}</td>
+                        <th>${{tarea.total}}</th>
+                  </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              <h3>Costo Total por las tareas:  <strong>${{costo_total_tareas}}</strong></h3>
+          </div>
+        </div>
+
+ <div class="row justify-content-center" style="border-top:3px solid #7745FF; margin-top: 3px;">
+          <div class="col-md-12">
+              <h2 style="text-align:center;">Costo total de la orden de trabajo</h2>
+              <h1 style="text-align:center;"> <strong>${{costo_total}}</strong> </h1>
+          </div>
+  </div>
+
+          <!-- Footer -->
+          <footer class="page-footer font-small blue">
+
+              <!-- Copyright -->
+              <div class="footer-copyright text-center py-3">2019 Copyright:
+                  Created by <a href="https://twitter.com/JosafhatHZ/">Josafhat softwares</a>
+              </div>
+              <!-- Copyright -->
+    
+            </footer>
+            <!-- Footer -->
+    
+
+
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
