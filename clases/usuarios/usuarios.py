@@ -2,7 +2,6 @@ import psycopg2
 import jwt
 from werkzeug.security import generate_password_hash, \
      check_password_hash
-from querys import usuarios as user_querys
 from configuration import key
 
 class Usuario:
