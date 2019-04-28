@@ -67,10 +67,7 @@ api.add_resource(OrdenesPDF,'/pdf/<id>')
 
 
 #main
-class HelloWorld(Resource):
-    def get(self):
-        return {"message":"Hello to workreports"}
-api.add_resource(HelloWorld,'/')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
