@@ -1,4 +1,4 @@
-import psycopg2
+import p'RDS_HOSTNAME' in os.environycopg2
 import jwt
 from werkzeug.security import generate_password_hash, \
      check_password_hash
@@ -76,21 +76,17 @@ def check_password(username,password):
         con = conection()
         cursor = con.cursor()
         query = f"SELECT password, id FROM usuarios WHERE usuario = '{username}' "
-        print(query)
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
-        print(data[0])
-        print(password)
         con.close()
-        print(check_password_hash(data[0],password))
         if data == None:
-            return False
+            return query
         if check_password_hash(data[0], password):
             return data
     except psycopg2.OperationalError as e:
        print('Unable to connect!\n{0}').format(e)
-       return False
+       return "error"
 
 def delete_user(id):
     try:
@@ -113,7 +109,7 @@ def set_token(id):
         id = user[0]
         username = user[1]
         permission = user[3]
-        token = jwt.encode({"id":id, "user":username, "permission": permission}, get_key() )
+        token = jwt.encode({"id":id, "user":username, "permission": permission}, "key123" )
         return token
     except psycopg2.OperationalError as e:
        print('Unable to connect!\n{0}').format(e)
