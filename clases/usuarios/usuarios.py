@@ -76,10 +76,14 @@ def check_password(username,password):
         con = conection()
         cursor = con.cursor()
         query = f"SELECT password, id FROM usuarios WHERE usuario = '{username}' "
+        print(query)
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
+        print(data[0])
+        print(password)
         con.close()
+        print(check_password_hash(data[0],password))
         if data == None:
             return False
         if check_password_hash(data[0], password):

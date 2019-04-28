@@ -1,6 +1,6 @@
 import os
 def get_key():
     key = "key123"
-    if os.environ['key']:
+    if 'key' in os.environ:
         key = os.environ['key']
     return key
