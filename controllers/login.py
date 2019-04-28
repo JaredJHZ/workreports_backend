@@ -5,8 +5,11 @@ import os
 
 class Login(Resource):
     def post(self,username):
-        requestJson = request.get_json(force=True)
-        passw = requestJson['password']
+        info = request.get_json(force=True)
+        passw = info['password']
+        print(info)
+        print("password")
+        print(passw)
         logged = check_password( username,  passw)
         if logged == "error":
             return {"mensaje":"error en base de datos"},400
@@ -14,6 +17,6 @@ class Login(Resource):
             token = set_token(logged[1])
             return {"sesion":str(token)},200,{"authentications":token}
         else:
-            return {"mensaje":"Usuario no registrado"+" "+username+" "+logged},400
+            return {"mensaje":"Usuario no registrado"+" "+username+" "},400
     def options(self):
         pass
