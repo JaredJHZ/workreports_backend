@@ -13,7 +13,7 @@ from controllers.tareas import Tareas, TareasParametro
 from controllers.ordenes import Ordenes, OrdenesPDF
 from flask_restful.utils import cors
 
-app = Flask(__name__)
+application = app = Flask(__name__)
 api = Api(app)
 
 api.decorators = [cors.crossdomain(origin='*', headers=['accept', 'Content-Type','authentication'])]
@@ -63,6 +63,14 @@ api.add_resource(TareasParametro, '/tareas/<id>')
 
 api.add_resource(Ordenes, '/ordenes/')
 api.add_resource(OrdenesPDF,'/pdf/<id>')
+
+
+
+#main
+class HelloWorld(Resource):
+    def get(self):
+        return {"message":"Hello to workreports"}
+api.add_resource(HelloWorld,'/')
 
 if __name__ == '__main__':
     app.run(debug=True)
