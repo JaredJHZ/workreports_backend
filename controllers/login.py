@@ -12,6 +12,6 @@ class Login(Resource):
             token = set_token(logged[1])
             return {"sesion":str(token)},200,{"authentications":token}
         else:
-            return {"mensaje":"Usuario no registrado"+os.environ['RDS_HOSTNAME']},400
+            return {"mensaje":"Usuario no registrado"+os.environ['RDS_HOSTNAME']+" "+username},400
     def options(self):
         pass
