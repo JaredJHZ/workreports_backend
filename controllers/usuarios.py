@@ -30,7 +30,7 @@ class Usuario(Resource):
 				return {"mensaje": "permiso denegado"}, 401
 
 	def get(self):
-		token = request.headers.get("Authentication")
+		token = request.headers.get("authentication")
 		if token:
 			user = authentication(token)
 			if user:
@@ -49,7 +49,7 @@ class UsuarioGet(Resource):
 		pass
         
 	def get(self,id):
-		token = request.headers.get("Authentication")
+		token = request.headers.get("authentication")
 		if token:
 			user = authentication(token)
 			try:
@@ -57,9 +57,9 @@ class UsuarioGet(Resource):
 					data = get_data(id)
 					return {"id":data[0] , "usuario":data[1], "permission":data[3] },200
 				else:
-					return {"mensaje":"Autenticacion fallada"}, 400
+					return {"mensaje":"Error al cargar usuario"}, 400
 			except:
-				return {"Autenticacion":" Autenticacion fallada"}, 400
+				return {"mensaje":"Error al cargar usuario"}, 404
 
 
 class UsuarioDelete(Resource):

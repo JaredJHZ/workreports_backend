@@ -87,6 +87,7 @@ def generar_pdf(id_orden):
     fecha_de_creacion = query_fecha_de_creacion(id_orden)
     cursor.execute(fecha_de_creacion)
     fecha_de_creacion = cursor.fetchone()
+    con.close()
     return {
         'empleado':data[1],
         'cliente':data[2],

@@ -59,6 +59,7 @@ class OrdenesPDF(Resource):
             response = make_response(pdf)
             response.headers['Content-Type'] = 'application/pdf'
             fecha = '{0:%d-%m-%Y %h:%m:%s}'.format(datetime.datetime.now())
+            
             response.headers['Content-Disposition'] = f"inline; filename={'orden-'+id+'-fecha-'+fecha}.pdf"
             return response
         else:

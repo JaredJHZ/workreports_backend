@@ -25,8 +25,8 @@ class Usuario:
             self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
             self.cursor = self.con.cursor()
             self.pw_hash = generate_password_hash(self.password)
-            query = user_querys.usuarios['insertar']
-            self.cursor.execute(query,(self.id,self.usuario,self.pw_hash,self.privilegios))
+            query = f"INSERT INTO usuarios (id, usuario, password,privilegios) VALUES('{self.id}', '{self.usuario}', '{self.pw_hash}', '{self.privilegios}');"
+            self.cursor.execute(query)
             self.con.commit()
             self.con.close()
             print("guardado correcto")
@@ -61,8 +61,8 @@ def get_data(id):
     try:
         con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
         cursor = con.cursor()
-        query = user_querys.usuarios['consultar_usuario']
-        cursor.execute(query, id)
+        query = f"SELECT * FROM usuarios WHERE id = '{id}';"
+        cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
         con.close()
