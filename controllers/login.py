@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api, reqparse
 from clases.usuarios.usuarios import check_password, set_token
+import os
 
 class Login(Resource):
     def post(self,username):
@@ -11,6 +12,6 @@ class Login(Resource):
             token = set_token(logged[1])
             return {"sesion":str(token)},200,{"authentications":token}
         else:
-            return {"mensaje":"Usuario no registrado"},400
+            return {"mensaje":"Usuario no registrado"+os.environ['RDS_HOSTNAME']},400
     def options(self):
         pass
