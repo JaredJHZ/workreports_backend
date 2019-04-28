@@ -1,4 +1,4 @@
-import p'RDS_HOSTNAME' in os.environycopg2
+import psycopg2
 import jwt
 from werkzeug.security import generate_password_hash, \
      check_password_hash
