@@ -41,6 +41,7 @@ def get_all_usuarios():
         con = conection()
         cursor = con.cursor()
         query = "SELECT * FROM usuarios;"
+        print(query)
         cursor.execute(query)
         data = cursor.fetchall()
         usuarios = []
