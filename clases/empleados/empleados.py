@@ -1,4 +1,5 @@
 import psycopg2
+from conexion import conection
 
 class empleados:
 
@@ -11,7 +12,7 @@ class empleados:
 
     def save(self):
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             self.cursor = self.con.cursor()
             query = f"INSERT INTO empleados.empleados(id, ap_paterno, ap_materno, nombre, id_direccion) VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}','{self.id_direccion}' ); "
             self.cursor.execute(query)
@@ -25,7 +26,7 @@ class empleados:
 
 def get_empleado(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM empleados.empleados WHERE id = '{id}' ;"
         cursor.execute(query)
@@ -52,7 +53,7 @@ def get_empleado(id):
 
 def modificar_empleado(id, nombre, ap_paterno, ap_materno, id_direccion):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"UPDATE empleados.empleados SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', ap_materno = '{ap_materno}', id_direccion = '{id_direccion}' WHERE id = '{id}'"
         cursor.execute(query)
@@ -66,7 +67,7 @@ def modificar_empleado(id, nombre, ap_paterno, ap_materno, id_direccion):
 
 def eliminar_empleado(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"DELETE FROM empleados.empleados WHERE id = '{id}';"
         cursor.execute(query)
@@ -80,7 +81,7 @@ def eliminar_empleado(id):
 
 def get_all():
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM empleados.empleados;"
         cursor.execute(query)

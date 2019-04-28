@@ -3,8 +3,7 @@ from flask_restful import Resource, Api, reqparse
 from clases.usuarios.usuarios import get_data,delete_user, modificar_usuario, get_all_usuarios
 from clases.usuarios.usuarios import Usuario as User
 from middlewares.middlewares import authentication
-import jwt
-from configuration import key
+
 class Usuario(Resource):
 	def options(self):
 		pass

@@ -1,5 +1,5 @@
 import psycopg2
-
+from conexion import conection
 class clientes:
 
     def __init__(self,id,ap_paterno,ap_materno,nombres,id_direccion,email):
@@ -12,7 +12,7 @@ class clientes:
 
     def save(self):
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             self.cursor = self.con.cursor()
             query = f"INSERT INTO clientes.clientes(id, ap_paterno, ap_materno, nombre, id_direccion, email) VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}','{self.id_direccion}', '{self.email}' ); "
             print(query)
@@ -27,7 +27,7 @@ class clientes:
 
 def get_cliente(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM clientes.clientes WHERE id = '{id}' ;"
         cursor.execute(query)
@@ -56,9 +56,10 @@ def get_cliente(id):
 
 def modificar_cliente(id, nombre, ap_paterno, ap_materno, id_direccion, email):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
-        query = f"UPDATE clientes.clientes SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', ap_materno = '{ap_materno}', id_direccion = '{id_direccion}', email = '{email}' WHERE id = '{id}'"
+        query = f"UPDATE clientes.clientes SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', \
+            ap_materno = '{ap_materno}', id_direccion = '{id_direccion}', email = '{email}' WHERE id = '{id}'"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -70,7 +71,7 @@ def modificar_cliente(id, nombre, ap_paterno, ap_materno, id_direccion, email):
 
 def eliminar_empleado(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"DELETE FROM clientes.clientes WHERE id = '{id}';"
         cursor.execute(query)

@@ -2,7 +2,8 @@ import psycopg2
 import jwt
 from werkzeug.security import generate_password_hash, \
      check_password_hash
-from configuration import key
+from configuration import get_key
+from conexion import conection
 
 class Usuario:
 
@@ -12,7 +13,7 @@ class Usuario:
         self.id = id
         self.privilegios = privilegios
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             print("conectado")
         except psycopg2.OperationalError as e:
             print('Unable to connect!\n{0}').format(e)
@@ -21,10 +22,11 @@ class Usuario:
     
     def save(self):
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
+            self.con = conection()
             self.cursor = self.con.cursor()
             self.pw_hash = generate_password_hash(self.password)
-            query = f"INSERT INTO usuarios (id, usuario, password,privilegios) VALUES('{self.id}', '{self.usuario}', '{self.pw_hash}', '{self.privilegios}');"
+            query = f"INSERT INTO usuarios (id, usuario, password,privilegios) VALUES('{self.id}',\
+                     '{self.usuario}', '{self.pw_hash}', '{self.privilegios}');"
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
@@ -36,7 +38,7 @@ class Usuario:
 
 def get_all_usuarios():
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = "SELECT * FROM usuarios;"
         cursor.execute(query)
@@ -58,7 +60,7 @@ def get_all_usuarios():
 
 def get_data(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM usuarios WHERE id = '{id}';"
         cursor.execute(query)
@@ -71,7 +73,7 @@ def get_data(id):
 
 def check_password(username,password):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT password, id FROM usuarios WHERE usuario = '{username}' "
         cursor.execute(query)
@@ -88,7 +90,7 @@ def check_password(username,password):
 
 def delete_user(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='localhost' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"DELETE FROM usuarios WHERE \"id\" LIKE '{id}' "
         cursor.execute(query)
@@ -107,7 +109,7 @@ def set_token(id):
         id = user[0]
         username = user[1]
         permission = user[3]
-        token = jwt.encode({"id":id, "user":username, "permission": permission}, key)
+        token = jwt.encode({"id":id, "user":username, "permission": permission}, get_key() )
         return token
     except psycopg2.OperationalError as e:
        print('Unable to connect!\n{0}').format(e)
@@ -115,11 +117,12 @@ def set_token(id):
 
 def modificar_usuario(id, usuario, password, privilegios):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         passW = generate_password_hash(password)
         print(passW)
-        query = f"UPDATE usuarios SET usuario = '{usuario}', password = '{passW}', privilegios = '{privilegios}'  WHERE id = '{id}'"
+        query = f"UPDATE usuarios SET usuario = '{usuario}', password = '{passW}', privilegios = '{privilegios}'  \
+                    WHERE id = '{id}'"
         cursor.execute(query)
         con.commit()
         con.close()

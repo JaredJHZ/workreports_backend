@@ -1,10 +1,11 @@
 import psycopg2
 from clases.ordenes.querys_orden import query_nombre_cliente_y_empleado, query_materiales, query_costo_de_materiales, query_tareas, query_costo_de_tareas, query_fecha_de_creacion
 import time
+from conexion import conection
 
 def guardar_serie_de_tareas(id_serie_de_tareas,tareas):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"INSERT INTO tareas.serie_de_tareas (id) VALUES ('{id_serie_de_tareas}');"
         cursor.execute(query)
@@ -20,7 +21,7 @@ def guardar_serie_de_tareas(id_serie_de_tareas,tareas):
 
 def guardar_lista_de_materiales(id_lista_de_materiales, materiales):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"INSERT INTO materiales.lista_de_materiales (id) VALUES ('{id_lista_de_materiales}');"
         cursor.execute(query)
@@ -39,7 +40,7 @@ def guardar_lista_de_materiales(id_lista_de_materiales, materiales):
 
 def generar_pdf(id_orden):
     info = query_nombre_cliente_y_empleado(id_orden)
-    con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+    con = conection()
     cursor = con.cursor()
     cursor.execute(info)
     data = cursor.fetchone()

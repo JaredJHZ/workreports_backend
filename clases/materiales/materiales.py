@@ -1,4 +1,5 @@
 import psycopg2
+from conexion import conection
 
 class materiales:
 
@@ -9,9 +10,10 @@ class materiales:
 
     def save(self):
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             self.cursor = self.con.cursor()
-            query = f"INSERT INTO materiales.materiales(id, nombre, costo_unitario) VALUES('{self.id}','{self.nombre}','{self.costo_unitario}' ); "
+            query = f"INSERT INTO materiales.materiales(id, nombre, costo_unitario) VALUES('{self.id}',\
+                '{self.nombre}','{self.costo_unitario}' ); "
             print(query)
             self.cursor.execute(query)
             self.con.commit()
@@ -24,7 +26,7 @@ class materiales:
 
 def get_material(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM materiales.materiales WHERE id = '{id}' ;"
         cursor.execute(query)
@@ -47,7 +49,7 @@ def get_material(id):
 
 def modificar_material(id, nombre, costo_unitario):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"UPDATE materiales.materiales SET nombre = '{nombre}', costo_unitario = '{costo_unitario}' WHERE id = '{id}'"
         cursor.execute(query)
@@ -61,7 +63,7 @@ def modificar_material(id, nombre, costo_unitario):
 
 def eliminar_material(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"DELETE FROM materiales.materiales WHERE id = '{id}';"
         cursor.execute(query)
@@ -75,7 +77,7 @@ def eliminar_material(id):
 
 def get_all():
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM materiales.materiales;"
         cursor.execute(query)

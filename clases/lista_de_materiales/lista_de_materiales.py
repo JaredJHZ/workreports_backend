@@ -1,4 +1,5 @@
 import psycopg2
+from conexion import conection
 
 class lista_de_materiales:
 
@@ -7,7 +8,7 @@ class lista_de_materiales:
 
     def save(self):
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             self.cursor = self.con.cursor()
             query = f"INSERT INTO materiales.lista_de_materiales(id) VALUES('{self.id}' ); "
             self.cursor.execute(query)
@@ -21,7 +22,7 @@ class lista_de_materiales:
 
 def get_lista_de_materiales(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM materiales.lista_de_materiales WHERE id = '{id}' ;"
         cursor.execute(query)
@@ -40,7 +41,7 @@ def get_lista_de_materiales(id):
 
 def eliminar_lista_de_materiales(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"DELETE FROM materiales.lista_de_materiales WHERE id = '{id}';"
         cursor.execute(query)
@@ -54,7 +55,7 @@ def eliminar_lista_de_materiales(id):
 
 def get_all():
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM materiales.lista_de_materiales;"
         cursor.execute(query)
@@ -74,7 +75,7 @@ def get_all():
 
 def agregar_materiales_a_la_lista(id,materiales):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         for material in materiales:
             id_m = material["id"]
@@ -91,7 +92,7 @@ def agregar_materiales_a_la_lista(id,materiales):
 
 def get_precio_total(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         total = 0
         query = f"SELECT materiales.materiales.costo_unitario, materiales.grupo_de_materiales.numero FROM materiales.materiales INNER JOIN materiales.grupo_de_materiales ON materiales.materiales.id = materiales.grupo_de_materiales.id_material WHERE materiales.grupo_de_materiales.id_lista_de_materiales = '{id}'; "

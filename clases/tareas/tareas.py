@@ -1,6 +1,7 @@
 import psycopg2
 import datetime
 import time
+from conexion import conection
 class tareas:
 
     def __init__(self,id,nombre, tarifa_hora, estimado_horas, estado, real_horas = None, fecha_termino = None):
@@ -15,7 +16,7 @@ class tareas:
     def save(self):
         try:
             fecha = 'NULL'
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             self.cursor = self.con.cursor()
             if self.real_horas == None:
                 self.real_horas = "Null"
@@ -39,7 +40,7 @@ class tareas:
 
 def get_tarea(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM tareas.tareas WHERE id = '{id}' ;"
         cursor.execute(query)
@@ -72,7 +73,7 @@ def get_tarea(id):
 
 def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, fecha_termino):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         if estado == 'completa':
             fecha_termino = "TIMESTAMP '{0:%Y-%m-%d %H:%M:%S}'".format(datetime.datetime.now())
@@ -96,7 +97,7 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
 
 def eliminar_tarea(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"DELETE FROM tareas.tareas WHERE id = '{id}';"
         cursor.execute(query)
@@ -110,7 +111,7 @@ def eliminar_tarea(id):
 
 def get_all():
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM tareas.tareas;"
         cursor.execute(query)

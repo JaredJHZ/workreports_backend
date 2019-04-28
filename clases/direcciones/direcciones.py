@@ -1,4 +1,5 @@
 import psycopg2
+from conexion import conection
 
 class direcciones:
     
@@ -9,14 +10,14 @@ class direcciones:
         self.estado = estado
         self.cp = cp
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             print("conectado")
         except psycopg2.OperationalError as e:
             print('Unable to connect!\n{0}').format(e)
     
     def save(self):
         try:
-            self.con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+            self.con = conection()
             self.cursor = self.con.cursor()
             query = f"INSERT INTO direcciones.direcciones(id, calle, ciudad, estado, cp) VALUES('{self.id}','{self.calle}','{self.ciudad}','{self.estado}','{self.cp}' ); "
             print(query)
@@ -31,7 +32,7 @@ class direcciones:
 
 def get_direccion(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM direcciones.direcciones WHERE id = '{id}' ;"
         cursor.execute(query)
@@ -58,7 +59,7 @@ def get_direccion(id):
 
 def modificar_direccion(id, calle, ciudad, estado, cp):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"UPDATE direcciones.direcciones SET calle = '{calle}', ciudad = '{ciudad}', estado = '{estado}', cp = '{cp}' WHERE id = '{id}'"
         cursor.execute(query)
@@ -72,7 +73,7 @@ def modificar_direccion(id, calle, ciudad, estado, cp):
 
 def eliminar_direccion(id):
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"DELETE FROM direcciones.direcciones WHERE id = '{id}';"
         cursor.execute(query)
@@ -86,7 +87,7 @@ def eliminar_direccion(id):
 
 def get_all():
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM direcciones.direcciones;"
         cursor.execute(query)
