@@ -30,15 +30,15 @@ class Usuario(Resource):
 
 	def get(self):
 		token = request.headers.get("authentication")
-		if true:
+		if True:
 			user = authentication(token)
-			if true:
-				permission = user["permission"]
-				if permission == 'ADMIN':
-					usuarios = get_all_usuarios()
-					return {"usuarios":usuarios}, 200
-				else:
-					return {"mensaje": "No es el permiso adecuado"}
+			if True:
+				#permission = user["permission"]
+				#if permission == 'ADMIN':
+				usuarios = get_all_usuarios()
+				return {"usuarios":usuarios}, 200
+			#else:
+			#	return {"mensaje": "No es el permiso adecuado"}
 			else:
 				return {"mensaje": "permiso denegado"}
 		else:
