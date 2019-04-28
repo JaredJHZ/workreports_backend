@@ -30,9 +30,9 @@ class Usuario(Resource):
 
 	def get(self):
 		token = request.headers.get("authentication")
-		if token:
+		if true:
 			user = authentication(token)
-			if user:
+			if true:
 				permission = user["permission"]
 				if permission == 'ADMIN':
 					usuarios = get_all_usuarios()
