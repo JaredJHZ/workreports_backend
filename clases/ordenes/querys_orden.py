@@ -36,3 +36,10 @@ def query_costo_de_tareas(id_orden):
 def query_fecha_de_creacion(id_orden):
         query = f"SELECT orden_de_trabajo.fecha_de_creacion as fecha_de_creacion FROM orden_de_trabajo WHERE id = '{id_orden}';"
         return query
+
+def query_get_todas_las_ordenes():
+        query = f"SELECT cliente.nombre, orden.fecha_de_creacion, direccion.calle, direccion.ciudad, direccion.estado, orden.id FROM\
+        orden_de_trabajo as orden INNER JOIN clientes.clientes as cliente ON cliente.id = orden.id_cliente\
+        INNER JOIN direcciones.direcciones as direccion ON direccion.id = orden.id_direccion_de_trabajo;"
+
+        return query

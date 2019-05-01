@@ -3,7 +3,7 @@ from flask_restful import Resource, Api, reqparse
 import pdfkit 
 from middlewares.middlewares import authentication
 from clases.ordenes.ordenes import ordenes
-from clases.ordenes.funciones_ordenes import guardar_serie_de_tareas, guardar_lista_de_materiales, generar_pdf
+from clases.ordenes.funciones_ordenes import guardar_serie_de_tareas, guardar_lista_de_materiales, generar_pdf, get_orden, get_all_ordenes
 import psycopg2
 import pathlib
 import datetime
@@ -35,6 +35,18 @@ class Ordenes(Resource):
         else:
             return {"mensaje": "Error"},401
 
+    def get(self):
+        token = request.headers.get("authentication")
+        user = authentication(token)
+        if user:
+            try:
+                lista_ordenes = get_all_ordenes()
+                return {"ordenes":lista_ordenes},201
+            except:
+                return {"mensaje": "Error"},401
+        else:
+            return {"mensaje": "Error al autenticarse"},501
+
     def options(self):
         pass
 
@@ -43,7 +55,7 @@ class OrdenesPDF(Resource):
     def get(self,id):
         token = request.headers.get('authentication')
         user = authentication(token)
-        if True:
+        if user:
             info = generar_pdf(id)
 
             image = pathlib.Path('/Users/jaredhernandez/WorkReports/backend/static/css/images/icons/logo.png').as_uri()
@@ -64,5 +76,20 @@ class OrdenesPDF(Resource):
             return response
         else:
             return {"mensaje":"Error al autenticarse"}
+    def options(self):
+        pass
+
+
+class OrdenesConParametro(Resource):
+
+    def get(self,id):
+        token = request.headers.get('authentication')
+        user = authentication(token)
+        if user:
+            orden = get_orden(id)
+            return {"orden":orden},201
+        else:
+            return {"mensaje":'Erro al autenticarse'},401
+    
     def options(self):
         pass

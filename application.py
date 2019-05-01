@@ -10,7 +10,7 @@ from controllers.clientes import Clientes,ClientesParametros
 from controllers.materiales import MaterialesParametro, Materiales
 from controllers.lista_de_materiales import Lista_de_material, ListaDeMaterialesParametro,PrecioLista
 from controllers.tareas import Tareas, TareasParametro
-from controllers.ordenes import Ordenes, OrdenesPDF
+from controllers.ordenes import Ordenes, OrdenesPDF, OrdenesConParametro
 from flask_restful.utils import cors
 
 application = app = Flask(__name__)
@@ -62,6 +62,7 @@ api.add_resource(TareasParametro, '/tareas/<id>')
 # Rutas de ordenes
 
 api.add_resource(Ordenes, '/ordenes/')
+api.add_resource(OrdenesConParametro, '/ordenes/<id>')
 api.add_resource(OrdenesPDF,'/pdf/<id>')
 
 

@@ -31,3 +31,10 @@ grupo.id_serie_de_tareas = orden.id_serie_de_tareas INNER JOIN tareas.tareas as 
 
 -- Fecha de creacion de orden --
 SELECT orden_de_trabajo.fecha_de_creacion as fecha_de_creacion FROM orden_de_trabajo WHERE id = '1';
+
+--Consulta de todoslas ordendes--
+
+SELECT cliente.nombre, orden.fecha_de_creacion, direccion.calle, direccion.ciudad, direccion.estado FROM
+orden_de_trabajo as orden INNER JOIN clientes.clientes as cliente ON cliente.id = orden.id_cliente
+INNER JOIN direcciones.direcciones as direccion ON direccion.id = orden.id_direccion_de_trabajo 
+WHERE orden.id = '1';
