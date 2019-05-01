@@ -5,8 +5,11 @@ import os
 
 class Login(Resource):
     def post(self,username):
-        requestJson = request.get_json(force=True)
-        passw = requestJson['password']
+        info = request.get_json(force=True)
+        passw = info['password']
+        print(info)
+        print("password")
+        print(passw)
         logged = check_password( username,  passw)
         if logged == "error":
             return {"mensaje":"error en base de datos"},400
