@@ -34,9 +34,8 @@ class tareas:
             self.con.commit()
             self.con.close()
             return True
-        except psycopg2.OperationalError as e:
-            print(e)
-            return False
+        except psycopg2.Error as e:
+            return (False , e.pgcode, e)
 
 def get_tarea(id):
     try:
@@ -66,9 +65,8 @@ def get_tarea(id):
             "fecha_termino":fecha
         }
         return tarea
-    except psycopg2.OperationalError as e:
-            print('Unable to connect!\n{0}').format(e)
-            return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
     
 
 def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, fecha_termino):
@@ -92,8 +90,8 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
         con.close()
         cursor.close()
         return True
-    except psycopg2.OperationalError as e:
-        print('Unable to connect!\n{0}').format(e)
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def eliminar_tarea(id):
     try:
@@ -105,9 +103,8 @@ def eliminar_tarea(id):
         con.close()
         cursor.close()
         return True
-    except:
-        print("Error al eliminar tarea")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def get_all():
     try:
@@ -135,6 +132,5 @@ def get_all():
         con.close()
         cursor.close()
         return tasks
-    except:
-        print("Error al obtener materiales")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)

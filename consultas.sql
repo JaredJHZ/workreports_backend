@@ -38,3 +38,8 @@ SELECT cliente.nombre, orden.fecha_de_creacion, direccion.calle, direccion.ciuda
 orden_de_trabajo as orden INNER JOIN clientes.clientes as cliente ON cliente.id = orden.id_cliente
 INNER JOIN direcciones.direcciones as direccion ON direccion.id = orden.id_direccion_de_trabajo 
 WHERE orden.id = '1';
+-- english -
+SELECT clients.name, work_order.date, direction.street, direction.city, direction.zip FROM
+work_orders as work_order INNER JOIN clients.clients as clients ON client.id = work_order.id_client
+INNER JOIN directions.directions as direction ON direction.id = work_order.id_work_direction 
+WHERE work_order.id = '1';

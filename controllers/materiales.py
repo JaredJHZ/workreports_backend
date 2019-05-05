@@ -3,12 +3,13 @@ from flask_restful import Resource, Api, reqparse
 from clases.materiales.materiales import materiales, get_material, eliminar_material, modificar_material, get_all
 from middlewares.middlewares import authentication
 import psycopg2
+from errors import errorHandling
 
 class Materiales(Resource):
     def options(self):
         pass
     def post(self):
-        print(request.headers);
+        print(request.headers)
         token = request.headers.get("authentication")
         user = authentication(token)
         if user:
@@ -17,13 +18,11 @@ class Materiales(Resource):
             nombre = info["nombre"]
             costo_unitario = info["costo_unitario"]
             material = materiales(id,nombre,costo_unitario)
-            try:
-                material.save()
-                return {"mensaje": "exito al guardar material"},201
-            except psycopg2.OperationalError as e:
-                print('Unable to connect!\n{0}').format(e)
-            except:
-                return {"mensaje": "error al guardar material"},501
+            material = material.save()
+            print(type(material))
+            if isinstance(material, tuple):
+                return {"mensaje": errorHandling(material[1], material[2])},501   
+            return {"mensaje": "exito al guardar material"},201
         else:
             return {"mensaje": "error, necesita autenticarse"},401
     def get(self):
@@ -31,10 +30,9 @@ class Materiales(Resource):
         user = authentication(token)
         if user:
             data = get_all()
-            if data:
-                return {"materiales":data},200
-            else:
-                return {"mensaje":"error interno"},501
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
+            return {"materiales":data},200
         else:
             return {"mensaje": "error, necesita autenticarse"},401
 
@@ -48,11 +46,10 @@ class MaterialesParametro(Resource):
             info = request.get_json(force = True)
             nombre = info["nombre"]
             costo_unitario = info["costo_unitario"]
-            try:
-                modificar_material(id,nombre,costo_unitario)
-                return {"mensaje":"material modificado correctamente"}
-            except:
-                return {"mensaje": "error al modificar material"},501
+            material = modificar_material(id,nombre,costo_unitario)
+            if (material[0]) == False:
+                return {"mensaje": errorHandling(material[1], material[2])},501   
+            return {"mensaje":"material modificado correctamente"}
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
     
@@ -61,10 +58,10 @@ class MaterialesParametro(Resource):
         user = authentication(token)
         if user:
             data = get_material(id)
-            if data:
-                return {"cliente":data},201
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
-                return {"mensaje": "material no encontrado"},404
+                return {"cliente":data},201
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
 
@@ -73,10 +70,10 @@ class MaterialesParametro(Resource):
         user = authentication(token)
         permission = user["permission"]
         if user and permission == 'ADMIN':
-            if eliminar_material(id):
-                return {"mensaje":"material eliminado"}
-            else:
-                return {"mensaje":"No se encontro el material"},404
+            data = eliminar_material(id)
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
+            return {"mensaje":"material eliminado"}
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
                 

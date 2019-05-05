@@ -3,7 +3,7 @@ from flask_restful import Resource, Api, reqparse
 from clases.usuarios.usuarios import get_data,delete_user, modificar_usuario, get_all_usuarios
 from clases.usuarios.usuarios import Usuario as User
 from middlewares.middlewares import authentication
-
+from errors import errorHandling
 class Usuario(Resource):
 	def options(self):
 		pass
@@ -21,24 +21,26 @@ class Usuario(Resource):
 					passw = requestJson['password']
 					privilegios = requestJson['privilegios']
 					usuario = User(username,passw,privilegios,id)
-					usuario.save()
+					data = usuario.save()
+
+					if data[0] == False:
+						return {"mensaje": errorHandling(data[1], data[2])},501 
 					return {"mensaje": "Usuario registrado"}, 201
-				else:
-					return {"mensaje": "No es el permiso adecuado"}
 			else:
 				return {"mensaje": "permiso denegado"}, 401
 
 	def get(self):
 		token = request.headers.get("authentication")
-		if True:
+		if token:
 			user = authentication(token)
-			if True:
-				#permission = user["permission"]
-				#if permission == 'ADMIN':
-				usuarios = get_all_usuarios()
-				return {"usuarios":usuarios}, 200
-			#else:
-			#	return {"mensaje": "No es el permiso adecuado"}
+			if user:
+				permission = user["permission"]
+				if permission == 'admin':
+					data = get_all_usuarios()
+
+					if data[0] == False:
+						return {"mensaje": errorHandling(data[1], data[2])},501 
+					return {"usuarios":data}, 200
 			else:
 				return {"mensaje": "permiso denegado"}
 		else:
@@ -54,6 +56,8 @@ class UsuarioGet(Resource):
 			try:
 				if user:
 					data = get_data(id)
+					if data[0] == False:
+						return {"mensaje": errorHandling(data[1], data[2])},501   
 					return {"id":data[0] , "usuario":data[1], "permission":data[3] },200
 				else:
 					return {"mensaje":"Error al cargar usuario"}, 400
@@ -69,17 +73,13 @@ class UsuarioDelete(Resource):
 		token = request.headers.get("Authentication")
 		user = authentication(token)
 		permission = user["permission"]
-		try:
-			if user and permission == 'ADMIN':
-				ok = delete_user(id)
-				if ok:
-					return {"mensaje": "Usuario eliminado!"},201
-				else:
-					return {"mensaje": "No se pudo eliminar el usuario"},401
-			else:
-				return {"mensaje": "permiso denegado"},404
-		except:
-			return {"mensaje":"permiso denegado"},401
+		if user and permission == 'ADMIN':
+			data = delete_user(id)
+			if data[0] == False:
+				return {"mensaje": errorHandling(data[1], data[2])},501   
+			return {"mensaje": "Usuario eliminado!"},201
+		else:
+			return {"mensaje": "permiso denegado"},404
 
 class UsuariosPut(Resource):
 	def options(self):
@@ -89,18 +89,14 @@ class UsuariosPut(Resource):
 		token = request.headers.get("Authentication")
 		user = authentication(token)
 		permission = user["permission"]
-		try:
-			if user and permission == 'ADMIN':
-				requestJson = request.get_json(force=True)
-				username = requestJson['usuario']
-				passw = requestJson['password']
-				privilegios = requestJson['privilegios']
-				ok = modificar_usuario(id,username,passw,privilegios)
-				if ok:
-					return {"mensaje": "Usuario modificado"},201
-				else:
-					return {"mensaje": "No se pudo modificar"},401
-			else:
-				return {"mensaje": "permiso denegado"},404
-		except:
-			return {"mensaje":"permiso denegado"},401
+		if user and permission == 'ADMIN':
+			requestJson = request.get_json(force=True)
+			username = requestJson['usuario']
+			passw = requestJson['password']
+			privilegios = requestJson['privilegios']
+			data = modificar_usuario(id,username,passw,privilegios)
+			if data[0] == False:
+				return {"mensaje": errorHandling(data[1], data[2])},501 
+			return {"mensaje": "Usuario modificado"},201
+		else:
+			return {"mensaje": "permiso denegado"},404

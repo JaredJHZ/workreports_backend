@@ -22,18 +22,18 @@ parser = reqparse.RequestParser()
 
 
 # Rutas de usuario
-api.add_resource(Usuario, '/usuario/')
-api.add_resource(UsuarioGet,'/usuario/<id>')
-api.add_resource(UsuariosPut,'/usuario/update/<id>')
-api.add_resource(UsuarioDelete, '/usuario/delete/<id>')
+api.add_resource(Usuario, '/usuarios/')
+api.add_resource(UsuarioGet,'/usuarios/<id>')
+api.add_resource(UsuariosPut,'/usuarios/update/<id>')
+api.add_resource(UsuarioDelete, '/usuarios/delete/<id>')
 
 # Rutas de login
 api.add_resource(Login, '/login/<username>')
 
 # Rutas de direcciones
 
-api.add_resource(Direcciones, '/direcciones/')
-api.add_resource(DireccionesParametro, '/direcciones/<id>')
+#api.add_resource(Direcciones, '/direcciones/')
+#api.add_resource(DireccionesParametro, '/direcciones/<id>')
 
 # Rutas de empleados
 api.add_resource(Empleados, '/empleados/')
@@ -74,4 +74,4 @@ class HelloWorld(Resource):
 api.add_resource(HelloWorld,'/')
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=80)
+    app.run(debug=True)

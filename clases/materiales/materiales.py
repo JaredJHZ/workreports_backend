@@ -12,17 +12,15 @@ class materiales:
         try:
             self.con = conection()
             self.cursor = self.con.cursor()
-            query = f"INSERT INTO materiales.materiales(id, nombre, costo_unitario) VALUES('{self.id}',\
+            query = f"INSERT INTO materiales.materiales(id, nombre, costo) VALUES('{self.id}',\
                 '{self.nombre}','{self.costo_unitario}' ); "
-            print(query)
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
             print("material guardado")
             return True
-        except psycopg2.OperationalError as e:
-            print('Unable to connect!\n{0}').format(e)
-            return False
+        except psycopg2.Error as e:
+            return (False , e.pgcode, e)
 
 def get_material(id):
     try:
@@ -42,10 +40,8 @@ def get_material(id):
             "costo_unitario":costo_unitario
         }
         return material
-    except:
-        print("error al obtener material")
-        return False
-    
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def modificar_material(id, nombre, costo_unitario):
     try:
@@ -57,9 +53,8 @@ def modificar_material(id, nombre, costo_unitario):
         con.close()
         cursor.close()
         return True
-    except:
-        print("error al modificar material")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def eliminar_material(id):
     try:
@@ -71,9 +66,8 @@ def eliminar_material(id):
         con.close()
         cursor.close()
         return True
-    except:
-        print("error al eliminar el material")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def get_all():
     try:
@@ -93,6 +87,5 @@ def get_all():
         con.close()
         cursor.close()
         return materiales
-    except:
-        print("error al obtener materiales")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)

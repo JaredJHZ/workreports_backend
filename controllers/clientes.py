@@ -3,7 +3,7 @@ from flask_restful import Resource, Api, reqparse
 from clases.clientes.clientes import clientes, get_cliente, modificar_cliente, eliminar_empleado, get_all
 from middlewares.middlewares import authentication
 import psycopg2
-
+from errors import errorHandling
 class Clientes(Resource):
     def post(self):
         token = request.headers.get("authentication")
@@ -14,16 +14,19 @@ class Clientes(Resource):
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["direcccion"]
             email = info["email"]
-            cliente = clientes(id,ap_paterno,ap_materno,nombre,id_direccion,email)
-            try:
-                cliente.save()
+            calle = info["calle"]
+            ciudad = info["ciudad"]
+            estado = info["estado"]
+            cp = info["cp"]
+            cliente = clientes(id,ap_paterno,ap_materno,nombre,calle,
+            ciudad, estado , cp, email)
+            cliente = cliente.save()
+            if (cliente[0]) == False:
+                return {"mensaje": errorHandling(cliente[1], cliente[2])},501    
+            else:
                 return {"mensaje": "exito al guardar cliente"},201
-            except psycopg2.OperationalError as e:
-                print('Unable to connect!\n{0}').format(e)
-            except:
-                return {"mensaje": "error al guardar cliente"},501
+            return {"mensaje": "error al guardar cliente"},501
         else:
             return {"mensaje": "error, necesita autenticarse"},401
 
@@ -32,10 +35,10 @@ class Clientes(Resource):
         user = authentication(token)
         if user:
             data = get_all()
-            if data:
-                return {"clientes":data},200
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
-                return {"mensaje":"error interno"},501
+                return {"clientes":data},200
         else:
             return {"mensaje": "error, necesita autenticarse"},401
     
@@ -55,7 +58,9 @@ class ClientesParametros(Resource):
             id_direccion = info["direccion"]
             email = info["email"]
             try:
-                modificar_cliente(id,nombre,ap_paterno,ap_materno,id_direccion,email)
+                cliente = modificar_cliente(id,nombre,ap_paterno,ap_materno,id_direccion,email)
+                if (cliente[0]) == False:
+                    return {"mensaje": errorHandling(cliente[1], cliente[2])},501   
                 return {"mensaje":"cliente modificado correctamente"}
             except:
                 return {"mensaje": "error al modificar cliente"},501
@@ -66,27 +71,25 @@ class ClientesParametros(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         if user:
-            data = get_cliente(id)
-            if data:
-                return {"cliente":data},201
+            cliente = get_cliente(id)
+            if (cliente[0]) == False:
+                return {"mensaje": errorHandling(cliente[1], cliente[2])},501   
             else:
-                return {"mensaje": "cliente no encontrado"},404
+                return {"cliente":cliente},201
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
 
     def delete(self,id):
         token = request.headers.get("authentication")
         user = authentication(token)
-        print(user)
         permission = user["permission"]
         if user and permission == 'ADMIN':
-            if eliminar_empleado(id):
-                return {"mensaje":"cliente eliminado"}
-            else:
-                return {"mensaje":"No se encontro al cliente"},404
+            cliente = eliminar_empleado(id)
+            if (cliente[0]) == False:
+                return {"mensaje": errorHandling(cliente[1], cliente[2])},501   
+            return {"mensaje":"cliente eliminado"},201
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
 
     def options(self):
         pass
-                

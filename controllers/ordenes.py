@@ -8,6 +8,7 @@ import psycopg2
 import pathlib
 import datetime
 import time
+from errors import errorHandling
 
 class Ordenes(Resource):
     def post(self):
@@ -30,7 +31,9 @@ class Ordenes(Resource):
             cliente = info['cliente']
             orden = ordenes(id, empleado= empleado, direccion=direccion,serie_de_tareas= id_serie_de_tareas,
             lista_de_materiales=lista_de_materiales, cliente= cliente )
-            orden.save()
+            data = orden.save()
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje":"Exito al guardar orden"},201
         else:
             return {"mensaje": "Error"},401
@@ -39,11 +42,10 @@ class Ordenes(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         if user:
-            try:
-                lista_ordenes = get_all_ordenes()
-                return {"ordenes":lista_ordenes},201
-            except:
-                return {"mensaje": "Error"},401
+            data = lista_ordenes = get_all_ordenes()
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
+            return {"ordenes":lista_ordenes},201
         else:
             return {"mensaje": "Error al autenticarse"},501
 
@@ -86,8 +88,10 @@ class OrdenesConParametro(Resource):
         token = request.headers.get('authentication')
         user = authentication(token)
         if user:
-            orden = get_orden(id)
-            return {"orden":orden},201
+            data = get_orden(id)
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
+            return {"orden":data},201
         else:
             return {"mensaje":'Erro al autenticarse'},401
     

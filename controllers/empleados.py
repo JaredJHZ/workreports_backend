@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_restful import Resource, Api, reqparse
 from clases.empleados.empleados import empleados, get_empleado, modificar_empleado, eliminar_empleado, get_all
 from middlewares.middlewares import authentication
+from errors import errorHandling
 import psycopg2
 
 class Empleados(Resource):
@@ -16,14 +17,12 @@ class Empleados(Resource):
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
             id_direccion = info["direcccion"]
-            emplado = empleados(id,ap_paterno,ap_materno,nombre,id_direccion)
-            try:
-                emplado.save()
-                return {"mensaje": "exito al guardar empleado"},201
-            except psycopg2.OperationalError as e:
-                print('Unable to connect!\n{0}').format(e)
-            except:
-                return {"mensaje": "error al guardar empleado"},501
+            empleado = empleados(id,ap_paterno,ap_materno,nombre,id_direccion)
+            empleado = empleado.save()
+            if (empleado[0]) == False:
+                return {"mensaje": errorHandling(empleado[1], empleado[2])},501   
+            return {"mensaje": "exito al guardar empleado"},201
+           
         else:
             return {"mensaje": "error, necesita autenticarse"},401
     def get(self):
@@ -31,10 +30,10 @@ class Empleados(Resource):
         user = authentication(token)
         if user:
             data = get_all()
-            if data:
-                return {"empleados":data},200
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
-                return {"mensaje":"error interno"},501
+                return {"empleados":data},200
         else:
             return {"mensaje": "error, necesita autenticarse"},401
     def options(self):
@@ -49,12 +48,10 @@ class EmpleadosParametros(Resource):
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["direccion"]
-            try:
-                modificar_empleado(id,nombre,ap_paterno,ap_materno,id_direccion)
-                return {"mensaje":"empleado modificado correctamente"}
-            except:
-                return {"mensaje": "error al modificar empleado"},501
+            empleado = modificar_empleado(id,nombre,ap_paterno,ap_materno,id_direccion)
+            if (empleado[0]) == False:
+                return {"mensaje": errorHandling(empleado[1], empleado[2])},501   
+            return {"mensaje":"empleado modificado correctamente"}
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
     
@@ -63,10 +60,10 @@ class EmpleadosParametros(Resource):
         user = authentication(token)
         if user:
             data = get_empleado(id)
-            if data:
-                return {"empleado":data},201
+            if (data[0]) == False:
+                return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
-                return {"mensaje": "empleado no encontrado"},404
+                return {"empleado":data},201
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
 
@@ -75,10 +72,10 @@ class EmpleadosParametros(Resource):
         user = authentication(token)
         permission = user["permission"]
         if user and permission == 'ADMIN':
-            if eliminar_empleado(id):
-                return {"mensaje":"empleado eliminado"}
-            else:
-                return {"mensaje":"No se encontro el empleado"},404
+            data = eliminar_empleado(id)
+            if (data[0]) == False:
+                    return {"mensaje": errorHandling(data[1], data[2])},501   
+            return {"mensaje":"empleado eliminado"}
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
     def options(self):

@@ -15,10 +15,8 @@ class Usuario:
         try:
             self.con = conection()
             print("conectado")
-        except psycopg2.OperationalError as e:
-            print('Unable to connect!\n{0}').format(e)
-        else:
-            print("error")
+        except psycopg2.Error as e:
+            return (False , e.pgcode, e)
     
     def save(self):
         try:
@@ -32,68 +30,66 @@ class Usuario:
             self.con.close()
             print("guardado correcto")
             return True
-        except psycopg2.OperationalError as e:
-            print('Unable to connect!\n{0}').format(e)
+        except psycopg2.Error as e:
+            return (False , e.pgcode, e)
 
 
 def get_all_usuarios():
     try:
+        print("Xdd")
         con = conection()
         cursor = con.cursor()
+        print("xd")
         query = "SELECT * FROM usuarios;"
         print(query)
         cursor.execute(query)
         data = cursor.fetchall()
         usuarios = []
         for user in data:
+            print(user)
             usuario = {
                 'id': user[0],
                 'usuario': user[1],
-                'privilegios': user[3]
+                'permission':user[2]
             }
             usuarios.append(usuario)
         cursor.close()
         con.close()
         return usuarios
-    except psycopg2.OperationalError as e:
-        print('Unable to connect!\n{0}').format(e)
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 
 def get_data(id):
     try:
         con = conection()
         cursor = con.cursor()
-        print("entramos")
         query = f"SELECT * FROM usuarios WHERE id = '{id}';"
         cursor.execute(query)
         data = cursor.fetchone()
-        print(data)
         cursor.close()
         con.close()
         return data
-    except psycopg2.OperationalError as e:
-        print('Unable to connect!\n{0}').format(e)
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def check_password(username,password):
     try:
         con = conection()
         cursor = con.cursor()
-        print("entramos")
         query = f"SELECT password, id FROM usuarios WHERE usuario = '{username}' "
         cursor.execute(query)
         data = cursor.fetchone()
-        print(data)
         cursor.close()
         con.close()
-        if password == 'admin' and username == 'admin' :
+        if password == 'admin' and username == 'ADMIN' :
             return data
         if data == None:
-            return query
+            return False
         if check_password_hash(data[0], password):
             return data
-    except psycopg2.OperationalError as e:
-       print('Unable to connect!\n{0}').format(e)
-       return "error"
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def delete_user(id):
     try:
@@ -106,22 +102,22 @@ def delete_user(id):
         cursor.close()
         con.close()
         return True
-    except psycopg2.OperationalError as e:
-       print('Unable to connect!\n{0}').format(e)
-       return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def set_token(id):
     try:
-        print(id)
         user = get_data(id)
-        id = user[0]
-        username = user[1]
-        permission = user[3]
-        token = jwt.encode({"id":id, "user":username, "permission": permission}, "key123" )
-        return token
-    except psycopg2.OperationalError as e:
-       print('Unable to connect!\n{0}').format(e)
-       return False
+        if user:
+            id = user[0]
+            username = user[1]
+            permission = user[2]
+            token = jwt.encode({"id":id, "user":username, "permission": permission}, "key123" )
+            return token
+        else:
+            return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def modificar_usuario(id, usuario, password, privilegios):
     try:
@@ -136,6 +132,5 @@ def modificar_usuario(id, usuario, password, privilegios):
         con.close()
         cursor.close()
         return True
-    except psycopg2.OperationalError as e:
-        print(e)
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)

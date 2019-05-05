@@ -2,28 +2,30 @@ import psycopg2
 from conexion import conection
 class clientes:
 
-    def __init__(self,id,ap_paterno,ap_materno,nombres,id_direccion,email):
+    def __init__(self,id,ap_paterno,ap_materno,nombres,calle,ciudad,estado,cp,email):
         self.id = id
         self.ap_paterno = ap_paterno
         self.ap_materno = ap_materno
         self.nombres = nombres
-        self.id_direccion = id_direccion
+        self.calle = calle
+        self.ciudad = ciudad
+        self.estado = estado
+        self.cp = cp
         self.email = email
 
     def save(self):
         try:
             self.con = conection()
             self.cursor = self.con.cursor()
-            query = f"INSERT INTO clientes.clientes(id, ap_paterno, ap_materno, nombre, id_direccion, email) VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}','{self.id_direccion}', '{self.email}' ); "
-            print(query)
+            query = f"INSERT INTO clientes.clientes(id, ap_paterno, ap_materno, nombre, email, calle,ciudad,estado,cp)\
+            VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}',\
+            '{self.email}', '{self.calle}', '{self.ciudad}','{self.estado}','{self.cp}' ); "
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
-            print("cliente guardados")
             return True
-        except psycopg2.OperationalError as e:
-            print('Unable to connect!\n{0}').format(e)
-            return False
+        except psycopg2.Error as e:
+            return (False , e.pgcode, e)
 
 def get_cliente(id):
     try:
@@ -38,20 +40,26 @@ def get_cliente(id):
         nombre = data[1]
         ap_paterno = data[2]
         ap_materno = data[3]
-        id_direccion = data[4]
-        email = data[5]
+        email = data[4]
+        calle = data[5]
+        ciudad = data[6]
+        estado = data[7]
+        cp = data[8]
+
         cliente = {
             "id":id,
             "nombre":nombre,
             "ap_paterno":ap_paterno,
             "ap_materno":ap_materno,
-            "id_direccion":id_direccion,
-            "email":email
+            "email":email,
+            "calle":calle,
+            "ciudad":ciudad,
+            "estado":estado,
+            "cp":cp
         }
         return cliente
-    except:
-        print("error al obtener cliente")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
     
 
 def modificar_cliente(id, nombre, ap_paterno, ap_materno, id_direccion, email):
@@ -65,9 +73,8 @@ def modificar_cliente(id, nombre, ap_paterno, ap_materno, id_direccion, email):
         con.close()
         cursor.close()
         return True
-    except:
-        print("error al modificar cliente")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def eliminar_empleado(id):
     try:
@@ -79,16 +86,14 @@ def eliminar_empleado(id):
         con.close()
         cursor.close()
         return True
-    except:
-        print("error al eliminar al cliente")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def get_all():
     try:
         con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
         cursor = con.cursor()
         query = f"SELECT * FROM clientes.clientes;"
-        print(query)
         cursor.execute(query)
         data = cursor.fetchall()
         clients = []
@@ -104,6 +109,5 @@ def get_all():
         con.close()
         cursor.close()
         return clients
-    except:
-        print("error al obtener clientes")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)

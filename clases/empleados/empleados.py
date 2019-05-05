@@ -20,9 +20,8 @@ class empleados:
             self.con.close()
             print("empleado guardados")
             return True
-        except psycopg2.OperationalError as e:
-            print('Unable to connect!\n{0}').format(e)
-            return False
+        except psycopg2.Error as e:
+            return (False , e.pgcode, e)
 
 def get_empleado(id):
     try:
@@ -46,9 +45,8 @@ def get_empleado(id):
             "id_direccion":id_direccion
         }
         return empleado
-    except:
-        print("error al obtener empleado")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
     
 
 def modificar_empleado(id, nombre, ap_paterno, ap_materno, id_direccion):
@@ -61,9 +59,8 @@ def modificar_empleado(id, nombre, ap_paterno, ap_materno, id_direccion):
         con.close()
         cursor.close()
         return True
-    except:
-        print("error al modificar direccion")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def eliminar_empleado(id):
     try:
@@ -75,9 +72,8 @@ def eliminar_empleado(id):
         con.close()
         cursor.close()
         return True
-    except:
-        print("error al eliminar la empleados")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
 
 def get_all():
     try:
@@ -99,6 +95,5 @@ def get_all():
         con.close()
         cursor.close()
         return employees
-    except:
-        print("error al obtener empleados")
-        return False
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
