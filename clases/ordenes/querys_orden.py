@@ -1,45 +1,42 @@
 def query_nombre_cliente_y_empleado(id_orden):
-    query = f"select orden.id as id_de_la_orden, clientes.nombre as cliente, empleados.nombre as supervisor FROM ordenes_de_trabajo as orden\
-            INNER JOIN clientes.clientes as clientes ON clientes.id = orden.id_cliente\
-            INNER JOIN empleados.empleados as empleados ON empleados.id = orden.id_empleado_supervisor where orden.id = '{id_orden}';"
+    query = f"select orden.id as id_de_la_orden, clientes.nombre as cliente, empleados.nombre as supervisor FROM orden_de_trabajo as orden\
+                INNER JOIN clientes.clientes as clientes ON clientes.id = orden.id_cliente\
+                INNER JOIN empleados.empleados as empleados ON empleados.id = orden.id_empleado_supervisor where orden.id = '{id_orden}';"
     return query
 
 def query_materiales(id_orden):
-        query = f"select materiales.nombre as nombre_material , grupo.numero as cantidad_del_material , materiales.costo_unitario as costo_unitario,\
-                costo_unitario * grupo.numero as total  from ordenes_de_trabajo as orden\
-                INNER JOIN materiales.lista_de_materiales as lista ON orden.id_lista_de_material = lista.id INNER JOIN\
-                materiales.grupo_de_materiales as grupo ON grupo.id_lista_de_materiales = lista.id INNER JOIN\
-                materiales.materiales as materiales ON materiales.id = grupo.id_material WHERE orden.id = '{id_orden}'; "
+        query = f"SELECT materiales.nombre as nombre_material, lista.cantidad_utilizada as cantidad_del_material, materiales.costo as costo_unitario,\
+                costo * lista.cantidad_utilizada as total FROM orden_de_trabajo as orden INNER JOIN materiales.lista_de_materiales as\
+                lista ON orden.id = lista.id_orden_de_trabajo INNER JOIN materiales.materiales as materiales ON materiales.id = lista.id_material WHERE orden.id = '{id_orden}'; "
 
         return query
 
 def query_costo_de_materiales(id_orden):
-        query = f"select SUM(materiales.costo_unitario * grupo.cantidad_utilizada) AS total from ordenes_de_trabajo as orden\
-                INNER JOIN materiales.lista_de_materiales as lista ON orden.id_lista_de_material = lista.id INNER JOIN\
-                materiales.grupo_de_materiales as grupo ON grupo.id_lista_de_materiales = lista.id INNER JOIN\
-                materiales.materiales as materiales ON materiales.id = grupo.id_material WHERE orden.id = '{id_orden}'  GROUP BY orden.id ;"
+        query = f"select SUM(materiales.costo * lista.cantidad_utilizada) AS total from orden_de_trabajo as orden\
+                INNER JOIN materiales.lista_de_materiales as lista ON lista.id_orden_de_trabajo = orden.id INNER JOIN\
+                materiales.materiales as materiales on lista.id_material = materiales.id WHERE orden.id = '{id_orden}' GROUP BY orden.id;";
 
         return query
 
 def query_tareas(id_orden):
-        query = f"SELECT tareas.nombre as nombre , tareas.tarifa_hora as tarifa , tareas.estimado_horas as horas, tareas.fecha_termino as fecha\
-                ,tareas.estimado_horas * tareas.tarifa_hora as total from ordenes_de_trabajo as orden INNER JOIN tareas.grupo_de_tareas as grupo ON \
-                grupo.id_serie_de_tareas = orden.id_serie_de_tareas INNER JOIN tareas.tareas as tareas ON tareas.id = grupo.id_tarea WHERE orden.id = '{id_orden}';"
+        query = f"SELECT tareas.nombre as nombre, tareas.tarifa_hora as tarifa, tareas.estimado_horas as horas, tareas.fecha_termino as fecha,\
+                tareas.estimado_horas * tareas.tarifa_hora as total from orden_de_trabajo as orden INNER JOIN tareas.serie_de_tareas as serie ON\
+                serie.id_ordenes_de_trabajo = orden.id INNER JOIN tareas.tareas as tareas ON tareas.id = serie.id_tarea WHERE orden.id = '{id_orden}';"
         return query
 
 def query_costo_de_tareas(id_orden):
-        query = f"SELECT SUM(tareas.estimado_horas * tareas.tarifa_hora) as total from ordenes_de_trabajo as orden INNER JOIN tareas.grupo_de_tareas as grupo ON \
-                grupo.id_serie_de_tareas = orden.id_serie_de_tareas INNER JOIN tareas.tareas as tareas ON tareas.id = grupo.id_tarea\
-                WHERE orden.id = '{id_orden}' GROUP BY orden.id;"
+        query = f"SELECT SUM(tareas.tarifa_hora * tareas.estimado_horas) as total from orden_de_trabajo as orden INNER JOIN tareas.serie_de_tareas as serie ON\
+                serie.id_ordenes_de_trabajo = orden.id INNER JOIN tareas.tareas ON tareas.id = serie.id_tarea WHERE orden.id = '{id_orden}';"
         return query
 
 def query_fecha_de_creacion(id_orden):
-        query = f"SELECT ordenes_de_trabajo.fecha_de_creacion as fecha_de_creacion FROM orden_de_trabajo WHERE id = '{id_orden}';"
+        query = f"SELECT orden_de_trabajo.fecha_de_creacion as fecha_de_creacion FROM orden_de_trabajo WHERE id = '{id_orden}';"
         return query
 
 def query_get_todas_las_ordenes():
-        query = f"SELECT cliente.nombre, ordenes.fecha_de_creacion, direccion.calle, direccion.ciudad, direccion.estado, orden.id FROM\
-        orden_de_trabajo as orden INNER JOIN clientes.clientes as cliente ON cliente.id = orden.id_cliente\
-        INNER JOIN direcciones.direcciones as direccion ON direccion.id = orden.id_direccion_de_trabajo;"
+        query = "SELECT cliente.nombre, orden.fecha_de_creacion, orden.calle, orden.ciudad, orden.estado FROM orden_de_trabajo as orden INNER JOIN clientes.clientes as cliente ON cliente.id = orden.id_cliente;"
+        return query
 
+def query_get_direccion(id_orden):
+        query = f"SELECT orden_de_trabajo.calle, orden_de_trabajo.ciudad, orden_de_trabajo.estado, orden_de_trabajo.cp FROM orden_de_trabajo WHERE orden_de_trabajo.id = '{id_orden}';"
         return query

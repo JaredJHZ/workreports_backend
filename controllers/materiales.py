@@ -16,10 +16,9 @@ class Materiales(Resource):
             info = request.get_json(force=True)
             id = info["id"]
             nombre = info["nombre"]
-            costo_unitario = info["costo_unitario"]
+            costo_unitario = info["costo"]
             material = materiales(id,nombre,costo_unitario)
             material = material.save()
-            print(type(material))
             if isinstance(material, tuple):
                 return {"mensaje": errorHandling(material[1], material[2])},501   
             return {"mensaje": "exito al guardar material"},201
@@ -45,9 +44,9 @@ class MaterialesParametro(Resource):
         if user:
             info = request.get_json(force = True)
             nombre = info["nombre"]
-            costo_unitario = info["costo_unitario"]
+            costo_unitario = info["costo"]
             material = modificar_material(id,nombre,costo_unitario)
-            if (material[0]) == False:
+            if isinstance(material, tuple):
                 return {"mensaje": errorHandling(material[1], material[2])},501   
             return {"mensaje":"material modificado correctamente"}
         else:
@@ -58,7 +57,7 @@ class MaterialesParametro(Resource):
         user = authentication(token)
         if user:
             data = get_material(id)
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
                 return {"cliente":data},201
@@ -69,9 +68,9 @@ class MaterialesParametro(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
-        if user and permission == 'ADMIN':
+        if user and permission == 'admin':
             data = eliminar_material(id)
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje":"material eliminado"}
         else:

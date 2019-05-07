@@ -16,10 +16,9 @@ class Empleados(Resource):
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["direcccion"]
-            empleado = empleados(id,ap_paterno,ap_materno,nombre,id_direccion)
+            empleado = empleados(id,ap_paterno,ap_materno,nombre)
             empleado = empleado.save()
-            if (empleado[0]) == False:
+            if (isinstance(empleado, tuple)):
                 return {"mensaje": errorHandling(empleado[1], empleado[2])},501   
             return {"mensaje": "exito al guardar empleado"},201
            
@@ -48,8 +47,8 @@ class EmpleadosParametros(Resource):
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            empleado = modificar_empleado(id,nombre,ap_paterno,ap_materno,id_direccion)
-            if (empleado[0]) == False:
+            empleado = modificar_empleado(id,nombre,ap_paterno,ap_materno)
+            if isinstance(empleado, tuple):
                 return {"mensaje": errorHandling(empleado[1], empleado[2])},501   
             return {"mensaje":"empleado modificado correctamente"}
         else:
@@ -59,11 +58,11 @@ class EmpleadosParametros(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         if user:
-            data = get_empleado(id)
-            if (data[0]) == False:
-                return {"mensaje": errorHandling(data[1], data[2])},501   
+            empleado = get_empleado(id)
+            if isinstance(empleado, tuple):
+                return {"mensaje": errorHandling(empleado[1], empleado[2])},501   
             else:
-                return {"empleado":data},201
+                return {"empleado":empleado},201
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
 
@@ -71,9 +70,9 @@ class EmpleadosParametros(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
-        if user and permission == 'ADMIN':
+        if user and permission == 'admin':
             data = eliminar_empleado(id)
-            if (data[0]) == False:
+            if isinstance(data, tuple):
                     return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje":"empleado eliminado"}
         else:

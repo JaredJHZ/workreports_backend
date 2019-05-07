@@ -16,27 +16,32 @@ class Ordenes(Resource):
         user = authentication(token)
         if user:
             info = request.get_json(force=True)
-            id_serie_de_tareas = info["serie_de_tareas"]
-            tareas = info["tareas"]
-            #se guardan las tareas de la orden de trabajo y se hace un enlace
-            guardar_serie_de_tareas(id_serie_de_tareas, tareas)
-            lista_de_materiales = info["lista_de_materiales"]
-            materiales = info["materiales"]
-            #se guardan los materiales de la orden de trabajo y se hace un enlace
-            guardar_lista_de_materiales(lista_de_materiales, materiales)
-            #se crea la orden de trabajo con las tareas y enlaces realizados
+            # materiales
             id = info['id']
-            empleado = info['empleado']
-            direccion = info['direccion']
-            cliente = info['cliente']
-            orden = ordenes(id, empleado= empleado, direccion=direccion,serie_de_tareas= id_serie_de_tareas,
-            lista_de_materiales=lista_de_materiales, cliente= cliente )
+            id_del_cliente = info['id_cliente']
+            id_empleado_supervisor = info['id_empleado']
+            fecha_termino = info['fecha_termino']
+            fecha_requerida = info['fecha_requerida']
+            calle = info['calle']
+            ciudad = info['ciudad']
+            estado = info['estado']
+            cp = info['cp']
+
+            materiales = info['materiales']
+            tareas = info['tareas']
+            
+            orden = ordenes(id,id_del_cliente,id_empleado_supervisor,fecha_termino,fecha_requerida, calle, ciudad,estado,cp)
+
+            guardar_lista_de_materiales(materiales, id)
+
+            guardar_serie_de_tareas(tareas, id)
+
             data = orden.save()
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje":"Exito al guardar orden"},201
         else:
-            return {"mensaje": "Error"},401
+            return {"mensaje": "Permiso denegado"},401
 
     def get(self):
         token = request.headers.get("authentication")
@@ -57,17 +62,18 @@ class OrdenesPDF(Resource):
     def get(self,id):
         token = request.headers.get('authentication')
         user = authentication(token)
-        if user:
+        if True:
             info = generar_pdf(id)
 
             image = pathlib.Path('/Users/jaredhernandez/WorkReports/backend/static/css/images/icons/logo.png').as_uri()
-
+            
             costo_total = float(info['costo_total_materiales']) + float(info['costo_total_tareas'])
 
 
             rendered = render_template('pdf_template.html', cliente = info['empleado'], empleado = info['cliente'], 
             orden = id, image = image, materiales = info['materiales'], costo_total_materiales = info['costo_total_materiales'], tareas = info['tareas'] ,
-            costo_total_tareas = info['costo_total_tareas'], costo_total = costo_total, fecha_de_creacion = info['fecha_de_creacion'])
+            costo_total_tareas = info['costo_total_tareas'], costo_total = costo_total, fecha_de_creacion = info['fecha_de_creacion'], calle = info['calle'], ciudad
+            = info['ciudad'], estado = info['estado'], cp = info['cp'])
 
             pdf = pdfkit.from_string(rendered, False)
             response = make_response(pdf)

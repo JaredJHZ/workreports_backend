@@ -19,7 +19,7 @@ class Tareas(Resource):
             estado = info["estado"]
             tarea = tareas(id,nombre,tarifa_hora,estimado_horas,estado)
             data = tarea.save()
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje": "exito al guardar tarea"},201
         else:
@@ -30,7 +30,7 @@ class Tareas(Resource):
         user = authentication(token)
         if user:
             data = get_all()
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"tareas":data},200
         else:
@@ -45,14 +45,13 @@ class TareasParametro(Resource):
         user = authentication(token)
         if user:
             info = request.get_json(force = True)
-            id = info["id"]
             nombre = info["nombre"]
-            tarifa_hora = info["tarifa_hora"]
-            estimado_horas = info["estimado_horas"]
+            tarifa_hora = info["tarifa"]
+            estimado_horas = info["estimado"]
             estado = info["estado"]
             real_horas = None
             data = modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = None, real_horas = real_horas)
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje":"Tarea modificada correctamente"}
         else:
@@ -63,7 +62,7 @@ class TareasParametro(Resource):
         user = authentication(token)
         if user:
             data = get_tarea(id)
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"tarea":data},201
         else:
@@ -74,9 +73,9 @@ class TareasParametro(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
-        if user and permission == 'ADMIN':
+        if user and permission == 'admin':
             data = eliminar_tarea(id)
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                     return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje":"Tarea eliminada"}
         else:

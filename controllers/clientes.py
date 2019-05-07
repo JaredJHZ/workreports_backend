@@ -22,7 +22,7 @@ class Clientes(Resource):
             cliente = clientes(id,ap_paterno,ap_materno,nombre,calle,
             ciudad, estado , cp, email)
             cliente = cliente.save()
-            if (cliente[0]) == False:
+            if isinstance(cliente, tuple):
                 return {"mensaje": errorHandling(cliente[1], cliente[2])},501    
             else:
                 return {"mensaje": "exito al guardar cliente"},201
@@ -35,7 +35,7 @@ class Clientes(Resource):
         user = authentication(token)
         if user:
             data = get_all()
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
                 return {"clientes":data},200
@@ -51,19 +51,17 @@ class ClientesParametros(Resource):
         user = authentication(token)
         if user:
             info = request.get_json(force = True)
-            print(info)
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
-            id_direccion = info["direccion"]
-            email = info["email"]
-            try:
-                cliente = modificar_cliente(id,nombre,ap_paterno,ap_materno,id_direccion,email)
-                if (cliente[0]) == False:
-                    return {"mensaje": errorHandling(cliente[1], cliente[2])},501   
-                return {"mensaje":"cliente modificado correctamente"}
-            except:
-                return {"mensaje": "error al modificar cliente"},501
+            calle = info["calle"]
+            ciudad = info["ciudad"]
+            estado = info["estado"]
+            cp = info["cp"]
+            cliente = modificar_cliente(id,nombre,ap_paterno,ap_materno,calle, ciudad, estado, cp)
+            if isinstance(cliente,tuple):
+                return {"mensaje": errorHandling(cliente[1], cliente[2])},501   
+            return {"mensaje":"cliente modificado correctamente"}
         else:
             return {"mensaje": "error se necesita estar autenticado"},401
     
@@ -72,7 +70,7 @@ class ClientesParametros(Resource):
         user = authentication(token)
         if user:
             cliente = get_cliente(id)
-            if (cliente[0]) == False:
+            if isinstance(cliente, tuple):
                 return {"mensaje": errorHandling(cliente[1], cliente[2])},501   
             else:
                 return {"cliente":cliente},201
@@ -83,9 +81,10 @@ class ClientesParametros(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
-        if user and permission == 'ADMIN':
+        print(user)
+        if user and permission == 'admin':
             cliente = eliminar_empleado(id)
-            if (cliente[0]) == False:
+            if isinstance(cliente,tuple):
                 return {"mensaje": errorHandling(cliente[1], cliente[2])},501   
             return {"mensaje":"cliente eliminado"},201
         else:

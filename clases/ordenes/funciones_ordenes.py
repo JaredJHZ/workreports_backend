@@ -1,17 +1,15 @@
 import psycopg2
-from clases.ordenes.querys_orden import query_nombre_cliente_y_empleado, query_materiales, query_costo_de_materiales, query_tareas, query_costo_de_tareas, query_fecha_de_creacion, query_get_todas_las_ordenes
+
+from clases.ordenes.querys_orden import query_nombre_cliente_y_empleado, query_materiales, query_costo_de_materiales, query_tareas, query_costo_de_tareas, query_fecha_de_creacion, query_get_todas_las_ordenes, query_get_direccion
 import time
 from conexion import conection
 
-def guardar_serie_de_tareas(id_serie_de_tareas,tareas):
+def guardar_serie_de_tareas(tareas,id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"INSERT INTO tareas.serie_de_tareas (id) VALUES ('{id_serie_de_tareas}');"
-        cursor.execute(query)
-        con.commit()
         for tarea in tareas:
-            query = f"INSERT INTO tareas.grupo_de_tareas VALUES('{id_serie_de_tareas}','{tarea}');"
+            query = f"INSERT INTO tareas.serie_de_tareas(id_tarea,id_ordenes_de_trabajo) VALUES('{tarea}','{id}');"
             cursor.execute(query)
             con.commit()
         con.close()
@@ -19,21 +17,17 @@ def guardar_serie_de_tareas(id_serie_de_tareas,tareas):
     except:
         return False
 
-def guardar_lista_de_materiales(id_lista_de_materiales, materiales):
+def guardar_lista_de_materiales(materiales, id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"INSERT INTO materiales.lista_de_materiales (id) VALUES ('{id_lista_de_materiales}');"
-        print(query)
-        cursor.execute(query)
-        con.commit()
         for material in materiales:
-            print(material)
             mid = material['id']
             estimada = material['cantidad_estimada']
             utilizada = material['cantidad_utilizada']
-            query = f"INSERT INTO materiales.grupo_de_materiales (id_lista_de_materiales,id_material, cantidad_estimada\
-                ,cantidad_utilizada) VALUES ('{id_lista_de_materiales}','{mid}','{estimada}', '{utilizada}');"
+            query = f"INSERT INTO materiales.lista_de_materiales ( id_orden_de_trabajo,id_material, cantidad_estimada\
+            ,cantidad_utilizada) VALUES ('{id}','{mid}','{estimada}', '{utilizada}');"
+            print(query)
             cursor.execute(query)
             con.commit()
         con.close()
@@ -90,6 +84,10 @@ def generar_pdf(id_orden):
     fecha_de_creacion = query_fecha_de_creacion(id_orden)
     cursor.execute(fecha_de_creacion)
     fecha_de_creacion = cursor.fetchone()
+    #direccion
+    direccion = query_get_direccion(id_orden)
+    cursor.execute(direccion)
+    direccion = cursor.fetchone()
     con.close()
     return {
         'empleado':data[1],
@@ -98,7 +96,12 @@ def generar_pdf(id_orden):
         'costo_total_materiales':costo_de_materiales[0],
         'tareas':lista_tareas,
         'costo_total_tareas': costo_de_tareas[0],
-        'fecha_de_creacion': '{0:%d-%m-%Y}'.format(fecha_de_creacion[0])
+        'fecha_de_creacion': '{0:%d-%m-%Y}'.format(fecha_de_creacion[0]),
+        'calle':direccion[0],
+        'ciudad':direccion[1],
+        'estado':direccion[2],
+        'cp':direccion[3]
+
     }
 
 def get_orden(id_orden):
@@ -175,13 +178,9 @@ def get_all_ordenes():
         data = cursor.fetchall()
         ordenes = []
         for orden in data:
+            print(orden)
             item = {
                 'cliente':orden[0],
-                'fecha_de_creacion':orden[1].strftime("%B %d, %Y"),
-                'calle':orden[2],
-                'ciudad':orden[3],
-                'estado':orden[4],
-                'id':orden[5]
             }
             ordenes.append(item)
         con.close()

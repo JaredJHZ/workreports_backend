@@ -26,7 +26,7 @@ class tareas:
                 self.fecha_termino = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
                 fecha = f"TIMESTAMP '{self.fecha_termino}'"
 
-            query = f"INSERT INTO tareas.tareas(id, nombre, tarifa_hora, estimado_horas, estado, real_horas,\
+            query = f"INSERT INTO tareas.tareas(id, nombre, tarifa_hora, estimado_horas, estado, horas_reales,\
                  fecha_termino) VALUES('{self.id}','{self.nombre}',{self.tarifa_hora}, {self.estimado_horas}, \
                      '{self.estado}', {self.real_horas}, {fecha} ); "
                      
@@ -82,7 +82,7 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
             real_horas = 'null'
         
         query = (f"UPDATE tareas.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', \
-            estimado_horas = {estimado_horas}, estado = '{estado}', real_horas = {real_horas}, \
+            estimado_horas = {estimado_horas}, estado = '{estado}', horas_reales = {real_horas}, \
                 fecha_termino = {fecha_termino} WHERE id = '{id}';")
       
         cursor.execute(query)

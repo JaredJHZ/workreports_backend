@@ -4,7 +4,6 @@ import pdfkit
 from clases.usuarios.usuarios import Usuario
 from controllers.login import Login
 from controllers.usuarios import Usuario, UsuarioGet, UsuarioDelete, UsuariosPut
-from controllers.direcciones import Direcciones,DireccionesParametro
 from controllers.empleados import Empleados,EmpleadosParametros
 from controllers.clientes import Clientes,ClientesParametros
 from controllers.materiales import MaterialesParametro, Materiales

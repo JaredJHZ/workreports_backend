@@ -4,6 +4,7 @@ from clases.usuarios.usuarios import get_data,delete_user, modificar_usuario, ge
 from clases.usuarios.usuarios import Usuario as User
 from middlewares.middlewares import authentication
 from errors import errorHandling
+
 class Usuario(Resource):
 	def options(self):
 		pass

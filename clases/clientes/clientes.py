@@ -62,12 +62,13 @@ def get_cliente(id):
         return (False , e.pgcode, e)
     
 
-def modificar_cliente(id, nombre, ap_paterno, ap_materno, id_direccion, email):
+def modificar_cliente(id, nombre, ap_paterno, ap_materno, calle, ciudad, estado, cp ):
     try:
         con = conection()
         cursor = con.cursor()
         query = f"UPDATE clientes.clientes SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', \
-            ap_materno = '{ap_materno}', id_direccion = '{id_direccion}', email = '{email}' WHERE id = '{id}'"
+            ap_materno = '{ap_materno}', calle = '{calle}', ciudad = '{ciudad}',\
+            estado = '{estado}', cp = '{cp}' WHERE id = '{id}';"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -91,7 +92,7 @@ def eliminar_empleado(id):
 
 def get_all():
     try:
-        con = psycopg2.connect("dbname='workreports' user='jaredhz' host='127.0.0.1' password='Atleti123@'")
+        con = conection()
         cursor = con.cursor()
         query = f"SELECT * FROM clientes.clientes;"
         cursor.execute(query)
