@@ -12,7 +12,6 @@ class Empleados(Resource):
         if user:
             info = request.get_json(force=True)
             id = info["id"]
-            print(info)
             nombre = info["nombre"]
             ap_paterno = info["ap_paterno"]
             ap_materno = info["ap_materno"]
@@ -29,7 +28,7 @@ class Empleados(Resource):
         user = authentication(token)
         if user:
             data = get_all()
-            if (data[0]) == False:
+            if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
                 return {"empleados":data},200

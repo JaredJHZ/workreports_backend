@@ -22,11 +22,11 @@ class tareas:
                 self.real_horas = "Null"
             if self.fecha_termino == None:
                 self.fecha_termino = "Null"
-            if self.estado == 'completa':
+            if self.estado == 'COMPLETA':
                 self.fecha_termino = '{0:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
                 fecha = f"TIMESTAMP '{self.fecha_termino}'"
 
-            query = f"INSERT INTO tareas.tareas(id, nombre, tarifa_hora, estimado_horas, estado, horas_reales,\
+            query = f"INSERT INTO workreports.tareas(id, nombre, tarifa_hora, estimado_horas, estado, horas_reales,\
                  fecha_termino) VALUES('{self.id}','{self.nombre}',{self.tarifa_hora}, {self.estimado_horas}, \
                      '{self.estado}', {self.real_horas}, {fecha} ); "
                      
@@ -41,7 +41,7 @@ def get_tarea(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM tareas.tareas WHERE id = '{id}' ;"
+        query = f"SELECT * FROM workreports.tareas WHERE id = '{id}' ;"
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
@@ -81,7 +81,7 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
         if real_horas == None:
             real_horas = 'null'
         
-        query = (f"UPDATE tareas.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', \
+        query = (f"UPDATE workreports.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', \
             estimado_horas = {estimado_horas}, estado = '{estado}', horas_reales = {real_horas}, \
                 fecha_termino = {fecha_termino} WHERE id = '{id}';")
       
@@ -97,7 +97,7 @@ def eliminar_tarea(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"DELETE FROM tareas.tareas WHERE id = '{id}';"
+        query = f"DELETE FROM workreports.tareas WHERE id = '{id}';"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -110,7 +110,7 @@ def get_all():
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM tareas.tareas;"
+        query = f"SELECT * FROM workreports.tareas;"
         cursor.execute(query)
         data = cursor.fetchall()
         tasks = []

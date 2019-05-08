@@ -17,7 +17,7 @@ class clientes:
         try:
             self.con = conection()
             self.cursor = self.con.cursor()
-            query = f"INSERT INTO clientes.clientes(id, ap_paterno, ap_materno, nombre, email, calle,ciudad,estado,cp)\
+            query = f"INSERT INTO workreports.clientes(id, ap_paterno, ap_materno, nombre, email, calle,ciudad,estado,cp)\
             VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}',\
             '{self.email}', '{self.calle}', '{self.ciudad}','{self.estado}','{self.cp}' ); "
             self.cursor.execute(query)
@@ -31,7 +31,7 @@ def get_cliente(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM clientes.clientes WHERE id = '{id}' ;"
+        query = f"SELECT * FROM workreports.clientes WHERE id = '{id}' ;"
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
@@ -66,7 +66,7 @@ def modificar_cliente(id, nombre, ap_paterno, ap_materno, calle, ciudad, estado,
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"UPDATE clientes.clientes SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', \
+        query = f"UPDATE workreports.clientes SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', \
             ap_materno = '{ap_materno}', calle = '{calle}', ciudad = '{ciudad}',\
             estado = '{estado}', cp = '{cp}' WHERE id = '{id}';"
         cursor.execute(query)
@@ -81,7 +81,7 @@ def eliminar_empleado(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"DELETE FROM clientes.clientes WHERE id = '{id}';"
+        query = f"DELETE FROM workreports.clientes WHERE id = '{id}';"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -94,7 +94,7 @@ def get_all():
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM clientes.clientes;"
+        query = f"SELECT * FROM workreports.clientes;"
         cursor.execute(query)
         data = cursor.fetchall()
         clients = []

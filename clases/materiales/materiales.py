@@ -12,7 +12,7 @@ class materiales:
         try:
             self.con = conection()
             self.cursor = self.con.cursor()
-            query = f"INSERT INTO materiales.materiales(id, nombre, costo) VALUES('{self.id}',\
+            query = f"INSERT INTO workreports.materiales(id, nombre, costo) VALUES('{self.id}',\
                 '{self.nombre}','{self.costo_unitario}' ); "
             self.cursor.execute(query)
             self.con.commit()
@@ -26,7 +26,7 @@ def get_material(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM materiales.materiales WHERE id = '{id}' ;"
+        query = f"SELECT * FROM workreports.materiales WHERE id = '{id}' ;"
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
@@ -47,7 +47,7 @@ def modificar_material(id, nombre, costo_unitario):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"UPDATE materiales.materiales SET nombre = '{nombre}', costo = '{costo_unitario}' WHERE id = '{id}'"
+        query = f"UPDATE workreports.materiales SET nombre = '{nombre}', costo = '{costo_unitario}' WHERE id = '{id}'"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -60,7 +60,7 @@ def eliminar_material(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"DELETE FROM materiales.materiales WHERE id = '{id}';"
+        query = f"DELETE FROM workreports.materiales WHERE id = '{id}';"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -73,7 +73,7 @@ def get_all():
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM materiales.materiales;"
+        query = f"SELECT * FROM workreports.materiales;"
         cursor.execute(query)
         data = cursor.fetchall()
         materiales = []

@@ -24,7 +24,8 @@ class Usuario(Resource):
 					usuario = User(username,passw,privilegios,id)
 					data = usuario.save()
 
-					if data[0] == False:
+					if isinstance(data,tuple):
+						print(data)
 						return {"mensaje": errorHandling(data[1], data[2])},501 
 					return {"mensaje": "Usuario registrado"}, 201
 			else:
@@ -36,10 +37,10 @@ class Usuario(Resource):
 			user = authentication(token)
 			if user:
 				permission = user["permission"]
-				if permission == 'admin':
+				if permission == 'ADMIN':
 					data = get_all_usuarios()
 
-					if data[0] == False:
+					if isinstance(data, tuple):
 						return {"mensaje": errorHandling(data[1], data[2])},501 
 					return {"usuarios":data}, 200
 			else:
@@ -57,7 +58,7 @@ class UsuarioGet(Resource):
 			try:
 				if user:
 					data = get_data(id)
-					if data[0] == False:
+					if isinstance(data,tuple):
 						return {"mensaje": errorHandling(data[1], data[2])},501   
 					return {"id":data[0] , "usuario":data[1], "permission":data[3] },200
 				else:
@@ -73,10 +74,11 @@ class UsuarioDelete(Resource):
 	def delete(self,id):
 		token = request.headers.get("Authentication")
 		user = authentication(token)
+		print(user)
 		permission = user["permission"]
 		if user and permission == 'ADMIN':
 			data = delete_user(id)
-			if data[0] == False:
+			if isinstance(data,tuple):
 				return {"mensaje": errorHandling(data[1], data[2])},501   
 			return {"mensaje": "Usuario eliminado!"},201
 		else:
@@ -96,7 +98,7 @@ class UsuariosPut(Resource):
 			passw = requestJson['password']
 			privilegios = requestJson['privilegios']
 			data = modificar_usuario(id,username,passw,privilegios)
-			if data[0] == False:
+			if isinstance(data,tuple):
 				return {"mensaje": errorHandling(data[1], data[2])},501 
 			return {"mensaje": "Usuario modificado"},201
 		else:

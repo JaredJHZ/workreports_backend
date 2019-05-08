@@ -13,7 +13,7 @@ class empleados:
         try:
             self.con = conection()
             self.cursor = self.con.cursor()
-            query = f"INSERT INTO empleados.empleados(id, ap_paterno, ap_materno, nombre) VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}' ); "
+            query = f"INSERT INTO workreports.empleados(id, ap_paterno, ap_materno, nombre) VALUES('{self.id}','{self.ap_paterno}','{self.ap_materno}','{self.nombres}' ); "
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
@@ -26,7 +26,7 @@ def get_empleado(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM empleados.empleados WHERE id = '{id}' ;"
+        query = f"SELECT * FROM workreports.empleados WHERE id = '{id}' ;"
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
@@ -50,7 +50,7 @@ def modificar_empleado(id, nombre, ap_paterno, ap_materno):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"UPDATE empleados.empleados SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', ap_materno = '{ap_materno}' WHERE id = '{id}'"
+        query = f"UPDATE workreports.empleados SET nombre = '{nombre}', ap_paterno = '{ap_paterno}', ap_materno = '{ap_materno}' WHERE id = '{id}'"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -63,7 +63,7 @@ def eliminar_empleado(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"DELETE FROM empleados.empleados WHERE id = '{id}';"
+        query = f"DELETE FROM workreports.empleados WHERE id = '{id}';"
         cursor.execute(query)
         con.commit()
         con.close()
@@ -76,7 +76,7 @@ def get_all():
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM empleados.empleados;"
+        query = f"SELECT * FROM workreports.empleados;"
         cursor.execute(query)
         data = cursor.fetchall()
         employees = []

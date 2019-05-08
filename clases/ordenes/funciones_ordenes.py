@@ -9,7 +9,7 @@ def guardar_serie_de_tareas(tareas,id):
         con = conection()
         cursor = con.cursor()
         for tarea in tareas:
-            query = f"INSERT INTO tareas.serie_de_tareas(id_tarea,id_ordenes_de_trabajo) VALUES('{tarea}','{id}');"
+            query = f"INSERT INTO workreports.serie_de_tareas(id_tarea,id_ordenes_de_trabajo) VALUES('{tarea}','{id}');"
             cursor.execute(query)
             con.commit()
         con.close()
@@ -25,7 +25,7 @@ def guardar_lista_de_materiales(materiales, id):
             mid = material['id']
             estimada = material['cantidad_estimada']
             utilizada = material['cantidad_utilizada']
-            query = f"INSERT INTO materiales.lista_de_materiales ( id_orden_de_trabajo,id_material, cantidad_estimada\
+            query = f"INSERT INTO workreports.lista_de_materiales ( id_orden_de_trabajo,id_material, cantidad_estimada\
             ,cantidad_utilizada) VALUES ('{id}','{mid}','{estimada}', '{utilizada}');"
             print(query)
             cursor.execute(query)

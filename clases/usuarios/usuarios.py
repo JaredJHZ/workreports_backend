@@ -14,7 +14,6 @@ class Usuario:
         self.privilegios = privilegios
         try:
             self.con = conection()
-            print("conectado")
         except psycopg2.Error as e:
             return (False , e.pgcode, e)
     
@@ -23,12 +22,11 @@ class Usuario:
             self.con = conection()
             self.cursor = self.con.cursor()
             self.pw_hash = generate_password_hash(self.password)
-            query = f"INSERT INTO usuarios (id, usuario, password,privilegios) VALUES('{self.id}',\
+            query = f"INSERT INTO workreports.usuarios (id, usuario, password,tipo) VALUES('{self.id}',\
                      '{self.usuario}', '{self.pw_hash}', '{self.privilegios}');"
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
-            print("guardado correcto")
             return True
         except psycopg2.Error as e:
             return (False , e.pgcode, e)
@@ -36,11 +34,9 @@ class Usuario:
 
 def get_all_usuarios():
     try:
-        print("Xdd")
         con = conection()
         cursor = con.cursor()
-        print("xd")
-        query = "SELECT * FROM usuarios;"
+        query = "SELECT * FROM workreports.usuarios;"
         print(query)
         cursor.execute(query)
         data = cursor.fetchall()
@@ -50,7 +46,7 @@ def get_all_usuarios():
             usuario = {
                 'id': user[0],
                 'usuario': user[1],
-                'permission':user[2]
+                'permission':user[3]
             }
             usuarios.append(usuario)
         cursor.close()
@@ -64,7 +60,7 @@ def get_data(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT * FROM usuarios WHERE id = '{id}';"
+        query = f"SELECT * FROM workreports.usuarios WHERE id = '{id}';"
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
@@ -77,12 +73,12 @@ def check_password(username,password):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"SELECT password, id FROM usuarios WHERE usuario = '{username}' "
+        query = f"SELECT password, id FROM workreports.usuarios WHERE usuario = '{username}'; "
         cursor.execute(query)
         data = cursor.fetchone()
         cursor.close()
         con.close()
-        if password == 'admin' and username == 'ADMIN' :
+        if password == 'admin' and username == 'admin' :
             return data
         if data == None:
             return False
@@ -95,7 +91,7 @@ def delete_user(id):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"DELETE FROM usuarios WHERE \"id\" LIKE '{id}' "
+        query = f"DELETE FROM workreports.usuarios WHERE \"id\" LIKE '{id}' "
         cursor.execute(query)
         con.commit()
         print("eliminacion completada")
@@ -108,10 +104,11 @@ def delete_user(id):
 def set_token(id):
     try:
         user = get_data(id)
+        print(user)
         if user:
             id = user[0]
             username = user[1]
-            permission = user[2]
+            permission = user[3]
             token = jwt.encode({"id":id, "user":username, "permission": permission}, "key123" )
             return token
         else:
@@ -125,7 +122,7 @@ def modificar_usuario(id, usuario, password, privilegios):
         cursor = con.cursor()
         passW = generate_password_hash(password)
         print(passW)
-        query = f"UPDATE usuarios SET usuario = '{usuario}', password = '{passW}', privilegios = '{privilegios}'  \
+        query = f"UPDATE workreports.usuarios SET usuario = '{usuario}', password = '{passW}', privilegios = '{privilegios}'  \
                     WHERE id = '{id}'"
         cursor.execute(query)
         con.commit()
