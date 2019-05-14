@@ -82,7 +82,7 @@ class ClientesParametros(Resource):
         user = authentication(token)
         permission = user["permission"]
         print(user)
-        if user and permission == 'admin':
+        if user and permission == 'ADMIN':
             cliente = eliminar_empleado(id)
             if isinstance(cliente,tuple):
                 return {"mensaje": errorHandling(cliente[1], cliente[2])},501   

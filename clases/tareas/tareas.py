@@ -29,7 +29,6 @@ class tareas:
             query = f"INSERT INTO workreports.tareas(id, nombre, tarifa_hora, estimado_horas, estado, horas_reales,\
                  fecha_termino) VALUES('{self.id}','{self.nombre}',{self.tarifa_hora}, {self.estimado_horas}, \
                      '{self.estado}', {self.real_horas}, {fecha} ); "
-                     
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
@@ -51,10 +50,12 @@ def get_tarea(id):
         tarifa_hora = data[2]
         estimado_horas = data[3]
         estado = data[4]
-        real_horas = data[5]
-        fecha = data[6]
+        real_horas = data[6]
+        fecha = data[5]
         if fecha != None:
             fecha = fecha.strftime("%B %d, %Y")
+        else:
+            fecha = "Tarea sin terminar"
         tarea = {
             "id":id,
             "nombre":nombre,
@@ -73,10 +74,10 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
     try:
         con = conection()
         cursor = con.cursor()
-        if estado == 'completa':
+        if estado == 'COMPLETA' and fecha_termino == None:
             fecha_termino = "TIMESTAMP '{0:%Y-%m-%d %H:%M:%S}'".format(datetime.datetime.now())
         else:
-            fecha_termino = 'null'
+            fecha_termino = f"TIMESTAMP '{fecha_termino}'"
 
         if real_horas == None:
             real_horas = 'null'
@@ -84,7 +85,6 @@ def modificar_tarea(id,nombre, tarifa_hora, estimado_horas, estado, real_horas, 
         query = (f"UPDATE workreports.tareas SET nombre = '{nombre}', tarifa_hora = '{tarifa_hora}', \
             estimado_horas = {estimado_horas}, estado = '{estado}', horas_reales = {real_horas}, \
                 fecha_termino = {fecha_termino} WHERE id = '{id}';")
-      
         cursor.execute(query)
         con.commit()
         con.close()
@@ -116,16 +116,16 @@ def get_all():
         tasks = []
         for tarea in data:
             fecha = 'null'
-            if tarea[6] != None:
-                fecha = tarea[6].strftime("%B %d, %Y")
-            
+            if tarea[5] != None:
+                fecha = tarea[5].strftime("%B %d, %Y")
+            horas_reales = 'null'
             task = {
                 "id":tarea[0],
                 "nombre":tarea[1],
                 "tarifa_hora":tarea[2],
                 "estimado_horas":tarea[3],
                 "estado":tarea[4],
-                "real_horas":tarea[5],
+                "real_horas":horas_reales,
                 "fecha_termino":fecha
             }
             tasks.append(task)

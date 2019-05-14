@@ -17,7 +17,6 @@ class empleados:
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()
-            print("empleado guardados")
             return True
         except psycopg2.Error as e:
             return (False , e.pgcode, e)

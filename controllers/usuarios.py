@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api, reqparse
-from clases.usuarios.usuarios import get_data,delete_user, modificar_usuario, get_all_usuarios
+from clases.usuarios.usuarios import get_data,delete_user, modificar_usuario, get_all_usuarios, modificar_usuario_password
 from clases.usuarios.usuarios import Usuario as User
 from middlewares.middlewares import authentication
 from errors import errorHandling
@@ -39,7 +39,7 @@ class Usuario(Resource):
 				permission = user["permission"]
 				if permission == 'ADMIN':
 					data = get_all_usuarios()
-
+					
 					if isinstance(data, tuple):
 						return {"mensaje": errorHandling(data[1], data[2])},501 
 					return {"usuarios":data}, 200
@@ -55,16 +55,13 @@ class UsuarioGet(Resource):
 		token = request.headers.get("authentication")
 		if token:
 			user = authentication(token)
-			try:
-				if user:
-					data = get_data(id)
-					if isinstance(data,tuple):
-						return {"mensaje": errorHandling(data[1], data[2])},501   
-					return {"id":data[0] , "usuario":data[1], "permission":data[3] },200
-				else:
-					return {"mensaje":"Error al cargar usuario"}, 400
-			except:
-				return {"mensaje":"Error al cargar usuario"}, 404
+			if user:
+				data = get_data(id)
+				if isinstance(data,tuple):
+					return {"mensaje": errorHandling(data[1], data[2])},501
+				return {"usuario":data},200
+			else:
+				return {"mensaje":"Error al cargar usuario"}, 400
 
 
 class UsuarioDelete(Resource):
@@ -95,9 +92,18 @@ class UsuariosPut(Resource):
 		if user and permission == 'ADMIN':
 			requestJson = request.get_json(force=True)
 			username = requestJson['usuario']
-			passw = requestJson['password']
 			privilegios = requestJson['privilegios']
-			data = modificar_usuario(id,username,passw,privilegios)
+			
+			passw = False
+
+			if 'password' in requestJson:
+				passw = requestJson['password']
+
+			if passw:
+				data = modificar_usuario_password(id,username,passw,privilegios)
+			else:
+				data = modificar_usuario(id,username,privilegios)
+			
 			if isinstance(data,tuple):
 				return {"mensaje": errorHandling(data[1], data[2])},501 
 			return {"mensaje": "Usuario modificado"},201

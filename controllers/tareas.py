@@ -17,8 +17,13 @@ class Tareas(Resource):
             tarifa_hora = info["tarifa_hora"]
             estimado_horas = info["estimado_horas"]
             estado = info["estado"]
-            tarea = tareas(id,nombre,tarifa_hora,estimado_horas,estado)
-            data = tarea.save()
+            if 'horas_reales' in info:
+                horas_reales = info["horas_reales"]
+                tarea = tareas(id,nombre,tarifa_hora,estimado_horas,estado, real_horas= horas_reales)
+                data = tarea.save()
+            else:
+                tarea = tareas(id,nombre,tarifa_hora,estimado_horas,estado)
+                data = tarea.save()
             if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje": "exito al guardar tarea"},201
@@ -31,7 +36,7 @@ class Tareas(Resource):
         if user:
             data = get_all()
             if isinstance(data,tuple):
-                return {"mensaje": errorHandling(data[1], data[2])},501   
+                return {"mensaje": errorHandling(data[1], data[2])},501  
             return {"tareas":data},200
         else:
             return {"mensaje": "Error, necesita autenticarse"},401
@@ -45,12 +50,20 @@ class TareasParametro(Resource):
         user = authentication(token)
         if user:
             info = request.get_json(force = True)
+            print(info)
             nombre = info["nombre"]
-            tarifa_hora = info["tarifa"]
-            estimado_horas = info["estimado"]
+            tarifa_hora = info["tarifa_hora"]
+            estimado_horas = info["estimado_horas"]
             estado = info["estado"]
             real_horas = None
-            data = modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = None, real_horas = real_horas)
+            if "real_horas" in info:
+                if info["real_horas"] != 0:
+                    real_horas = info["real_horas"]
+            fecha_termino = None
+            if "fecha_termino" in info:
+                fecha_termino = info["fecha_termino"]
+            print(fecha_termino)
+            data = modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = fecha_termino, real_horas = real_horas)
             if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             return {"mensaje":"Tarea modificada correctamente"}
@@ -69,11 +82,10 @@ class TareasParametro(Resource):
             return {"mensaje": "Error se necesita estar autenticado"},400
 
     def delete(self,id):
-        print("xd")
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
-        if user and permission == 'admin':
+        if user and permission == 'ADMIN':
             data = eliminar_tarea(id)
             if isinstance(data,tuple):
                     return {"mensaje": errorHandling(data[1], data[2])},501   

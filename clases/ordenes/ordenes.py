@@ -22,8 +22,9 @@ class ordenes:
             self.con = conection()
             self.cursor = self.con.cursor()
             query = f"INSERT INTO workreports.orden_de_trabajo(id,calle,ciudad,estado,cp,fecha_de_creacion, fecha_requerida, fecha_termino, id_empleado_supervisor,\
-                    id_cliente) VALUES ('{self.id}','{self.calle}','{self.ciudad}','{self.estado}','{self.cp}',{self.fecha_de_creacion},{self.fecha_requerida},\
-                        {self.fecha_de_termino},'{self.empleado}','{self.cliente}');";
+                    id_cliente) VALUES ('{self.id}','{self.calle}','{self.ciudad}','{self.estado}','{self.cp}',{self.fecha_de_creacion},TIMESTAMP '{self.fecha_requerida}',\
+                      TIMESTAMP  '{self.fecha_de_termino}','{self.empleado}','{self.cliente}');"
+            print(query)
             self.cursor.execute(query)
             self.con.commit()
             self.con.close()

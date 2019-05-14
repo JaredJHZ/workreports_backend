@@ -37,12 +37,10 @@ def get_all_usuarios():
         con = conection()
         cursor = con.cursor()
         query = "SELECT * FROM workreports.usuarios;"
-        print(query)
         cursor.execute(query)
         data = cursor.fetchall()
         usuarios = []
         for user in data:
-            print(user)
             usuario = {
                 'id': user[0],
                 'usuario': user[1],
@@ -65,7 +63,11 @@ def get_data(id):
         data = cursor.fetchone()
         cursor.close()
         con.close()
-        return data
+        return {
+            "id":data[0],
+            "usuario":data[1],
+            "permission":data[3]
+        }
     except psycopg2.Error as e:
         return (False , e.pgcode, e)
 
@@ -94,7 +96,6 @@ def delete_user(id):
         query = f"DELETE FROM workreports.usuarios WHERE \"id\" LIKE '{id}' "
         cursor.execute(query)
         con.commit()
-        print("eliminacion completada")
         cursor.close()
         con.close()
         return True
@@ -106,9 +107,9 @@ def set_token(id):
         user = get_data(id)
         print(user)
         if user:
-            id = user[0]
-            username = user[1]
-            permission = user[3]
+            id = user['id']
+            username = user['usuario']
+            permission = user['permission']
             token = jwt.encode({"id":id, "user":username, "permission": permission}, "key123" )
             return token
         else:
@@ -116,13 +117,26 @@ def set_token(id):
     except psycopg2.Error as e:
         return (False , e.pgcode, e)
 
-def modificar_usuario(id, usuario, password, privilegios):
+def modificar_usuario(id, usuario, privilegios):
+    try:
+        con = conection()
+        cursor = con.cursor()
+        query = f"UPDATE workreports.usuarios SET usuario = '{usuario}', tipo = '{privilegios}'  \
+                    WHERE id = '{id}'"
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        cursor.close()
+        return True
+    except psycopg2.Error as e:
+        return (False , e.pgcode, e)
+
+def modificar_usuario_password(id,usuario,password,privilegios):
     try:
         con = conection()
         cursor = con.cursor()
         passW = generate_password_hash(password)
-        print(passW)
-        query = f"UPDATE workreports.usuarios SET usuario = '{usuario}', password = '{passW}', privilegios = '{privilegios}'  \
+        query = f"UPDATE workreports.usuarios SET usuario = '{usuario}', password = '{passW}', tipo = '{privilegios}'  \
                     WHERE id = '{id}'"
         cursor.execute(query)
         con.commit()

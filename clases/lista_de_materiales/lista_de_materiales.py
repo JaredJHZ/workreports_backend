@@ -35,7 +35,6 @@ def get_lista_de_materiales(id):
         }
         return lista
     except:
-        print("error al obtener la lista de materiales")
         return False
     
 
@@ -50,7 +49,6 @@ def eliminar_lista_de_materiales(id):
         cursor.close()
         return True
     except:
-        print("error al eliminar la lista de materiales")
         return False
 
 def get_all():
@@ -70,7 +68,6 @@ def get_all():
         cursor.close()
         return lists
     except:
-        print("error al obtener listas de materiales")
         return False
 
 def agregar_materiales_a_la_lista(id,materiales):
@@ -87,7 +84,6 @@ def agregar_materiales_a_la_lista(id,materiales):
         cursor.close()
         return True
     except:
-        print("error al agregar materiales")
         return False
 
 def get_precio_total(id):
@@ -100,10 +96,8 @@ def get_precio_total(id):
         data = cursor.fetchall()
         for precions in data:
             total += precions[0] * precions[1]
-        print(total)
         con.close()
         cursor.close()
         return total
     except:
-        print("error al recuperar precios de materiales")
         return False

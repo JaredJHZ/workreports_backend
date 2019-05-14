@@ -69,7 +69,7 @@ class EmpleadosParametros(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
-        if user and permission == 'admin':
+        if user and permission == 'ADMIN':
             data = eliminar_empleado(id)
             if isinstance(data, tuple):
                     return {"mensaje": errorHandling(data[1], data[2])},501   

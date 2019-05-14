@@ -44,7 +44,7 @@ class MaterialesParametro(Resource):
         if user:
             info = request.get_json(force = True)
             nombre = info["nombre"]
-            costo_unitario = info["costo"]
+            costo_unitario = info["costo_unitario"]
             material = modificar_material(id,nombre,costo_unitario)
             if isinstance(material, tuple):
                 return {"mensaje": errorHandling(material[1], material[2])},501   
@@ -60,7 +60,7 @@ class MaterialesParametro(Resource):
             if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
             else:
-                return {"cliente":data},201
+                return {"material":data},201
         else:
             return {"mensaje": "error se necesita estar autenticado"},400
 
@@ -68,7 +68,7 @@ class MaterialesParametro(Resource):
         token = request.headers.get("authentication")
         user = authentication(token)
         permission = user["permission"]
-        if user and permission == 'admin':
+        if user and permission == 'ADMIN':
             data = eliminar_material(id)
             if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   

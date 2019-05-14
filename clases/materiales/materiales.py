@@ -47,7 +47,9 @@ def modificar_material(id, nombre, costo_unitario):
     try:
         con = conection()
         cursor = con.cursor()
+        print("xd")
         query = f"UPDATE workreports.materiales SET nombre = '{nombre}', costo = '{costo_unitario}' WHERE id = '{id}'"
+        print(query)
         cursor.execute(query)
         con.commit()
         con.close()
