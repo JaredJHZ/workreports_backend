@@ -1,6 +1,6 @@
 import psycopg2
 
-from clases.ordenes.querys_orden import query_nombre_cliente_y_empleado, query_materiales, query_costo_de_materiales, query_tareas, query_costo_de_tareas, query_fecha_de_creacion, query_get_todas_las_ordenes, query_get_direccion, query_delete_orden
+from clases.ordenes.querys_orden import query_nombre_cliente_y_empleado, query_materiales, query_costo_de_materiales, query_tareas, query_costo_de_tareas, query_fecha_de_creacion, query_get_todas_las_ordenes, query_get_direccion, query_delete_orden, query_update_orden
 import time
 from conexion import conection
 
@@ -10,6 +10,7 @@ def guardar_serie_de_tareas(tareas,id):
         cursor = con.cursor()
         for tarea in tareas:
             query = f"INSERT INTO workreports.serie_de_tareas(id_tarea,id_orden_de_trabajo) VALUES('{tarea}','{id}');"
+            print(query)
             cursor.execute(query)
             con.commit()
         con.close()
@@ -177,7 +178,6 @@ def get_all_ordenes():
         data = cursor.fetchall()
         ordenes = []
         for orden in data:
-            print(orden)
             item = {
                 'id':orden[0],
                 'cliente':orden[1],
@@ -203,5 +203,27 @@ def eliminar_orden(id):
         con.close()
         cursor.close()
         return True
+    except psycopg2.Error as e:
+        return (False, e.pgcode, e)
+
+def update_orden(id, empleado, cliente, fecha_de_creacion, fecha_requerida, fecha_termino, calle, ciudad, estado, cp, materiales, tareas):
+    try:
+        con = conection()
+        cursor = con.cursor()
+        query = f"DELETE FROM workreports.lista_de_materiales WHERE id_orden_de_trabajo = {id};"
+        cursor.execute(query)
+        con.commit()
+        query = f"DELETE FROM workreports.serie_de_tareas WHERE id_orden_de_trabajo = {id};"
+        cursor.execute(query)
+        con.commit()
+        query = query_update_orden(id,empleado,cliente,fecha_de_creacion,fecha_requerida,fecha_termino,calle,ciudad,estado,cp)
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        cursor.close()
+        guardar_lista_de_materiales(materiales,id)
+        guardar_serie_de_tareas(tareas,id)
+        return True
+
     except psycopg2.Error as e:
         return (False, e.pgcode, e)

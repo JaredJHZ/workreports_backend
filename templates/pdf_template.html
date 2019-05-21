@@ -3,6 +3,7 @@
   <head>
     <title>Orden</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <style type="text/css">
       .container {
@@ -62,7 +63,7 @@
 
     <div class="row" style="border-top:3px solid #343A40; margin-top: 3px;">
         <div class="col-md-12">
-          <h3>Seccion de materiales</h3>
+          <h3>Lista de materiales</h3>
           <table class="table">
               <thead class="thead-dark">
                 <tr>
@@ -81,15 +82,20 @@
                       <th>${{material.costo_total_material}}</th>
                 </tr>
                   {% endfor %}
+                  <tr>   
+                    <td></td>
+                    <td></td>
+                    <td>Costo total de material</td>
+                    <th>${{costo_total_materiales}}</th>
+              </tr>
               </tbody>
             </table>
-            <h3>Costo Total de los materiales usados:  <strong>${{costo_total_materiales}}</strong></h3>
         </div>
       </div>
 
       <div class="row" style="border-top:3px solid #343A40; margin-top: 3px;">
           <div class="col-md-12">
-            <h3>Seccion de tareas</h3>
+            <h3>Serie de tareas</h3>
             <table class="table">
                 <thead class="thead-dark">
                   <tr>
@@ -110,9 +116,15 @@
                         <th>${{tarea.total}}</th>
                   </tr>
                     {% endfor %}
+                    <tr>   
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>Costo total de material</td>
+                      <th>${{costo_total_tareas}}</th>
+                </tr>
                 </tbody>
               </table>
-              <h3>Costo Total por las tareas:  <strong>${{costo_total_tareas}}</strong></h3>
           </div>
         </div>
 

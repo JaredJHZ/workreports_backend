@@ -45,3 +45,8 @@ def query_get_direccion(id_orden):
 def query_delete_orden(id_orden):
         query = f"DELETE FROM workreports.orden_de_trabajo as orden WHERE orden.id = '{id_orden}' ;"
         return query
+
+def query_update_orden(id_orden,empleado,cliente, fecha_de_creacion, fecha_requerida, fecha_termino, calle,ciudad,estado,cp):
+        query = f"UPDATE table workreports.orden_de_trabajo SET id_empleado_supervisor = {empleado}, id_cliente = {cliente}, fecha_de_creacion = {fecha_de_creacion}, \
+                fecha_requerida = {fecha_requerida}, fecha_termino = {fecha_termino}, calle = {calle}, ciudad = {ciudad}, estado = {estado}, cp = {cp};"
+        return query

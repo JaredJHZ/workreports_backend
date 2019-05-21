@@ -50,7 +50,6 @@ class TareasParametro(Resource):
         user = authentication(token)
         if user:
             info = request.get_json(force = True)
-            print(info)
             nombre = info["nombre"]
             tarifa_hora = info["tarifa_hora"]
             estimado_horas = info["estimado_horas"]
@@ -62,7 +61,6 @@ class TareasParametro(Resource):
             fecha_termino = None
             if "fecha_termino" in info:
                 fecha_termino = info["fecha_termino"]
-            print(fecha_termino)
             data = modificar_tarea(id,nombre,tarifa_hora,estimado_horas,estado, fecha_termino = fecha_termino, real_horas = real_horas)
             if isinstance(data,tuple):
                 return {"mensaje": errorHandling(data[1], data[2])},501   
