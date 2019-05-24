@@ -1,6 +1,6 @@
 import psycopg2
 
-from clases.ordenes.querys_orden import query_nombre_cliente_y_empleado, query_materiales, query_costo_de_materiales, query_tareas, query_costo_de_tareas, query_fecha_de_creacion, query_get_todas_las_ordenes, query_get_direccion, query_delete_orden, query_update_orden
+from clases.ordenes.querys_orden import query_nombre_cliente_y_empleado, query_materiales, query_costo_de_materiales, query_tareas, query_costo_de_tareas, query_fecha_de_creacion, query_get_todas_las_ordenes, query_get_direccion, query_delete_orden, query_update_orden, query_add_material, query_add_tarea, delete_material, delete_tarea
 import time
 from conexion import conection
 
@@ -10,7 +10,6 @@ def guardar_serie_de_tareas(tareas,id):
         cursor = con.cursor()
         for tarea in tareas:
             query = f"INSERT INTO workreports.serie_de_tareas(id_tarea,id_orden_de_trabajo) VALUES('{tarea}','{id}');"
-            print(query)
             cursor.execute(query)
             con.commit()
         con.close()
@@ -115,6 +114,8 @@ def get_orden(id_orden):
         data = cursor.fetchone()
         orden_de_trabajo['cliente'] = data[1]
         orden_de_trabajo['empleado'] = data[2]
+        orden_de_trabajo['id_cliente'] = data[3]
+        orden_de_trabajo['id_empleado'] = data[4]
         #materiales
         materiales = query_materiales(id_orden)
         cursor.execute(materiales)
@@ -125,7 +126,8 @@ def get_orden(id_orden):
                 'nombre':material[0],
                 'cantidad':material[1],
                 'costo_unitario':material[2],
-                'costo_total_material':material[3]
+                'costo_total_material':material[3],
+                'id':material[4]
             }
             lista_materiales.append(item)
         orden_de_trabajo['materiales'] = lista_materiales
@@ -148,7 +150,8 @@ def get_orden(id_orden):
                 'tarifa_por_hora':tarea[1],
                 'horas': tarea[2],
                 'fecha': fecha,
-                'total':tarea[4]
+                'total':tarea[4],
+                'id':tarea[5]
             }
             lista_tareas.append(item)
         orden_de_trabajo['tareas'] = lista_tareas
@@ -161,9 +164,16 @@ def get_orden(id_orden):
         fecha_de_creacion = query_fecha_de_creacion(id_orden)
         cursor.execute(fecha_de_creacion)
         fecha_de_creacion = cursor.fetchone()
-        con.close()
         orden_de_trabajo['fecha_de_creacion'] = '{0:%d-%m-%Y}'.format(fecha_de_creacion[0])
-
+        # direccion
+        direccion = query_get_direccion(id_orden)
+        cursor.execute(direccion)
+        direccion = cursor.fetchone()
+        orden_de_trabajo['calle'] = direccion[0]
+        orden_de_trabajo['ciudad'] = direccion[1]
+        orden_de_trabajo['estado'] = direccion[2]
+        orden_de_trabajo['cp'] = direccion[3]
+        con.close()
         return orden_de_trabajo
     except psycopg2.Error as e:
         return (False , e.pgcode, e)
@@ -206,24 +216,70 @@ def eliminar_orden(id):
     except psycopg2.Error as e:
         return (False, e.pgcode, e)
 
-def update_orden(id, empleado, cliente, fecha_de_creacion, fecha_requerida, fecha_termino, calle, ciudad, estado, cp, materiales, tareas):
+def update_orden(id, empleado, cliente, calle, ciudad, estado, cp):
     try:
         con = conection()
         cursor = con.cursor()
-        query = f"DELETE FROM workreports.lista_de_materiales WHERE id_orden_de_trabajo = {id};"
-        cursor.execute(query)
-        con.commit()
-        query = f"DELETE FROM workreports.serie_de_tareas WHERE id_orden_de_trabajo = {id};"
-        cursor.execute(query)
-        con.commit()
-        query = query_update_orden(id,empleado,cliente,fecha_de_creacion,fecha_requerida,fecha_termino,calle,ciudad,estado,cp)
+        query = query_update_orden(id,empleado,cliente,calle,ciudad,estado,cp)
         cursor.execute(query)
         con.commit()
         con.close()
         cursor.close()
-        guardar_lista_de_materiales(materiales,id)
-        guardar_serie_de_tareas(tareas,id)
         return True
 
+    except psycopg2.Error as e:
+        return (False, e.pgcode, e)
+
+def add_tarea(id,id_tarea):
+    try:
+        con = conection()
+        cursor = con.cursor()
+        query = query_add_tarea(id,id_tarea)
+        print(query)
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        cursor.close()
+        return True
+    except psycopg2.Error as e:
+        return (False, e.pgcode, e)
+
+def add_material(id,id_material,cantidad_estimada, cantidad_utilizada):
+    try:
+        con = conection()
+        cursor = con.cursor()
+        query = query_add_material(id,id_material,cantidad_estimada,cantidad_utilizada)
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        cursor.close()
+        return True
+    except psycopg2.Error as e:
+        return (False, e.pgcode, e)
+
+def delete_tarea_orden(id,id_tarea):
+    try:
+        con = conection()
+        cursor = con.cursor()
+        query = delete_tarea(id,id_tarea)
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        cursor.close()
+        return True
+    except psycopg2.Error as e:
+        return (False, e.pgcode, e)
+
+def delete_material_orden(id,id_material):
+    try:
+        con = conection()
+        cursor = con.cursor()
+        query = delete_material(id,id_material)
+        print(query)
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        cursor.close()
+        return True
     except psycopg2.Error as e:
         return (False, e.pgcode, e)

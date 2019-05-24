@@ -9,7 +9,6 @@ class Materiales(Resource):
     def options(self):
         pass
     def post(self):
-        print(request.headers)
         token = request.headers.get("authentication")
         user = authentication(token)
         if user:
