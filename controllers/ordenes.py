@@ -19,7 +19,10 @@ class Ordenes(Resource):
             info = request.get_json(force=True)
             # materiales
             id = info['id']
-            id_del_cliente = info['cliente']
+            if 'cliente' in info:
+                id_del_cliente = info['cliente']
+            else:
+                id_del_cliente = 'null'
             id_empleado_supervisor = info['empleado']
             fecha_termino = info['fecha_termino']
             fecha_requerida = info['fecha_requerida']

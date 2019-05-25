@@ -1,5 +1,6 @@
 def query_nombre_cliente_y_empleado(id_orden):
-    query = f"select orden.id as id_de_la_orden, clientes.nombre as cliente, empleados.nombre, clientes.id, empleados.id as supervisor FROM workreports.orden_de_trabajo as orden\
+    query = f"select orden.id as id_de_la_orden, clientes.nombre as cliente, empleados.nombre, clientes.id, empleados.id, clientes.ap_paterno,\
+             clientes.ap_materno, empleados.ap_paterno, empleados.ap_materno as supervisor FROM workreports.orden_de_trabajo as orden\
                 INNER JOIN workreports.clientes as clientes ON clientes.id = orden.id_cliente\
                 INNER JOIN workreports.empleados as empleados ON empleados.id = orden.id_empleado_supervisor where orden.id = '{id_orden}';"
     return query

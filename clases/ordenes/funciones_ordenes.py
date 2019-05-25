@@ -89,8 +89,8 @@ def generar_pdf(id_orden):
     direccion = cursor.fetchone()
     con.close()
     return {
-        'empleado':data[1],
-        'cliente':data[2],
+        'empleado':data[1] + ' '+ data[5] + ' '+ data[6],
+        'cliente':data[2] + ' '+ data[7] + ' '+ data[8],
         'materiales':lista_materiales,
         'costo_total_materiales':costo_de_materiales[0],
         'tareas':lista_tareas,
@@ -112,8 +112,8 @@ def get_orden(id_orden):
         cursor = con.cursor()
         cursor.execute(info)
         data = cursor.fetchone()
-        orden_de_trabajo['cliente'] = data[1]
-        orden_de_trabajo['empleado'] = data[2]
+        orden_de_trabajo['cliente'] = data[1] +' '+data[5]+' '+data[6]
+        orden_de_trabajo['empleado'] = data[2] +' '+data[7]+' '+data[8]
         orden_de_trabajo['id_cliente'] = data[3]
         orden_de_trabajo['id_empleado'] = data[4]
         #materiales
