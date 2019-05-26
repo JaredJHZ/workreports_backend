@@ -5,11 +5,12 @@ import os
 def conection():
     # Conexion de localhost
     dbname = 'wr'
-    user = 'jaredhz'
-    #host = 'workreports.cm9qevhwerud.eu-central-1.rds.amazonaws.com'
-    host = '127.0.0.1'
-    #password = 'asdqwe123'
-    password = 'Atleti123@'
+    #dbname = 'wr'
+    #user = 'jaredhz'
+    host = 'database-workreports.cexz3nfemwxc.us-east-1.rds.amazonaws.com'
+    #host = '127.0.0.1'
+    password = 'asdqwe123'
+    #password = 'Atleti123@'
 
     
     conection =  psycopg2.connect(f"dbname={dbname}\

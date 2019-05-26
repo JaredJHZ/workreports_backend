@@ -79,6 +79,8 @@ api.add_resource(OrdenesTareas, '/ordenes/tareas/<id>/<tarea>')
 class HelloWorld(Resource):
     def get(self):
         return {"message":"Hello to workreports"}
+
+        
 api.add_resource(HelloWorld,'/')
 
 if __name__ == '__main__':
