@@ -105,7 +105,7 @@ def delete_user(id):
 def set_token(id):
     try:
         user = get_data(id)
-        print(user)
+        
         if user:
             id = user['id']
             username = user['usuario']
